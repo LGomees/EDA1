@@ -11,6 +11,9 @@
 //6 - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1, 
 //onde 0 será se o valor do elemento correspondente for menor do que a média
 //7 - Função que faça a media do valor dos elementos da matriz que representa um pixel
+//8 - Função que faça a formula de contraste
+//9 - Função que faça a formula de energia
+//10 - Função que faça a formula de homogenidade
 
 int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
