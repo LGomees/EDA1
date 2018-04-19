@@ -2,30 +2,19 @@
 #include <stdlib.h>
 #include <math.h>
 
-void alocaVectorInt(int, int*); // tamanho do vetor, vetor a ser alocado
+int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
 int valorMinimo(int, int*); // tamanho do vetor, vetor
 int valorMaximo(int, int*); // tamanho do vetor, vetor
-int *normalizar(int, int*); // retorna o vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
+int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
 
 int main () {
     int *p, *q;
     float result = 0;
     int n = 2, i = 0;
-    //alocaVectorInt(n, p);
-    //alocaVectorInt(n, q);
 
-    p = (int*) calloc(n, sizeof(int));
-    if(p == NULL){
-        printf("Alocacao falhou. Finalizado. \n");
-        exit(1);
-    }
-
-    q = (int*) calloc(n, sizeof(int));
-    if(q == NULL){
-        printf("Alocacao falhou. Finalizado. \n");
-        exit(1);
-    }
+    p = alocaVectorInt(n);
+    q = alocaVectorInt(n);
 
     for(i=0; i<n; i++){
         printf("Digite o termo %d de p: ", i);
@@ -44,12 +33,13 @@ int main () {
     return 0;
 }
 
-void alocaVectorInt(int n, int* p){
-    p = (int*) calloc(n, sizeof(int));
-    if(p == NULL){
+int *alocaVectorInt(int n){
+    int* vet = (int*) calloc(n, sizeof(int));
+    if(vet == NULL){
         printf("Alocacao falhou. Finalizado. \n");
         exit(1);
     }
+    return vet;
 }
 
 float distanciaEuclidiana(int n, int* p, int* q) {
@@ -88,11 +78,7 @@ int *normalizar(int n, int* x){
     int *result, min, max;
     min = valorMinimo(n, x);
     max = valorMaximo(n, x);
-    result = (int*) calloc(n, sizeof(int));
-    if(result == NULL){
-        printf("Alocacao falhou. Finalizado. \n");
-        exit(1);
-    }
+    result = alocaVectorInt(n);
 
     for(int i=0; i<n; i++){
         *(result+i) = (*(x+i) - min) / (max - min);
