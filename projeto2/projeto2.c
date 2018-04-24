@@ -4,9 +4,9 @@
 
 //1 - Abre arquivo e armazena em uma matriz o valor de cada pixel da imagem
 //2 OK - Função que rotacione um vetor, pegue o ultimo elemento do vetor e coloque como o primeiro elemento
-//3 - Função que use a função de rotacionar para rotacionar-lo até voltar ao vetor inicial, e comparar o
+//3 OK - Função que use a função de rotacionar para rotacionar-lo até voltar ao vetor inicial, e comparar o
 //valor do vetor em decimal e armazenar o menor desses valores
-//4 - Função que transforme um vetor de numeros binarios em um numero decimal
+//4 OK - Função que transforme um vetor de numeros binarios em um numero decimal
 //5 - Cada pixel (8) deve ser comparado com seus vizinhos
 //6 - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1,
 //onde 0 será se o valor do elemento correspondente for menor do que a média
@@ -21,14 +21,24 @@ float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vet
 int valorMinimo(int, int*); // tamanho do vetor, vetor
 int valorMaximo(int, int*); // tamanho do vetor, vetor
 int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
-
+int binDecimal(int*, int); // retorna o valor em decimal e passa o vetor de binado como parametro
+int rotacionaVetor(int*, int);
 
 int main () {
     int *p, *q;
     float result = 0;
-    int n = 2, i, j, l, aux, aux2, aux3, aux4, k = 9;
-    int vetorBin[k];
-    /*p = alocaVectorInt(n);
+    int resultado = 0;
+    int n = 2, i, k=9;
+
+    p = alocaVectorInt(k);
+    
+    for(i=0; i<k; i++){
+        scanf("%d", p+i);
+    }
+
+    resultado = rotacionaVetor(p, k);
+
+    /*
     q = alocaVectorInt(n);
 
     for(i=0; i<n; i++){
@@ -44,64 +54,7 @@ int main () {
 
     free(p);
     free(q);*/
-    printf("Digite um conjunto de valores:\n");
-    for(i=0;i<k;i++) {
-      scanf("%d", &vetorBin[i]);
-    }
-
-    for(i = 0;i < k;i++){
-
-      if(i==0){
-        aux = vetorBin[i];
-        aux2 = vetorBin[i+1];
-        for(l=0;l<k;l++){
-          if(l==0){
-            vetorBin[l] = vetorBin[k-1];
-            vetorBin[l+1] = aux;
-          }
-          if(l==1){
-            aux = vetorBin[l+2];
-            aux3 = vetorBin[l+1];
-            vetorBin[l+1] = aux2;
-            vetorBin[l+2] = aux3;
-          }
-          if (l>1){
-            aux4 = vetorBin[l+2];
-            vetorBin[l+2] = aux;
-            aux = aux4;
-          }
-        }
-        for (j = 0; j < k; j++) {
-          printf(" %d ",  vetorBin[j]);
-        }
-        printf("\n");
-      }
-      else{
-        for(l=0;l<k;l++){
-          if(l==0){
-            aux = vetorBin[l];
-            aux2 = vetorBin[l+1];
-            vetorBin[l] = vetorBin[k-1];
-            vetorBin[l+1] = aux;
-          }
-          if(l==1){
-            aux = vetorBin[l+2];
-            aux3 = vetorBin[l+1];
-            vetorBin[l+1] = aux2;
-            vetorBin[l+2] = aux3;
-          }
-          if (l>1){
-            aux4 = vetorBin[l+2];
-            vetorBin[l+2] = aux;
-            aux = aux4;
-          }
-        }
-        for (j = 0; j < k; j++) {
-          printf(" %d ",  vetorBin[j]);
-        }
-        printf("\n");
-      }
-    }
+    
 
     return 0;
 }
@@ -165,5 +118,71 @@ int *normalizar(int n, int* x){
     for(int i=0; i<n; i++){
         *(result+i) = (*(x+i) - min) / (max - min);
     }
+    return result;
+}
+
+int binDecimal(int * v, int n){
+    int result = 0;
+    for(int i = 0; i<n; i++){
+        result += *(v+n-i-1) * pow(2, i);
+    }
+    return result;
+}
+
+// 
+
+int rotacionaVetor(int* v, int n){
+    int aux, aux2, aux3, aux4, i, l, j, *vetorResult, result;
+
+    vetorResult = alocaVectorInt(n);
+
+    for(i = 0;i < n;i++){
+
+      if(i==0){
+        aux = *(v+i);
+        aux2 = *(v+i+1);
+        for(l=0;l<n;l++){
+          if(l==0){
+            *(v+l) = *(v+n-1);
+            *(v+l+1) = aux;
+          }
+          if(l==1){
+            aux = *(v+l+2);
+            aux3 = *(v+l+1);
+            *(v+l+1) = aux2;
+            *(v+l+2) = aux3;
+          }
+          if (l>1){
+            aux4 = *(v+l+2);
+            *(v+l+2) = aux;
+            aux = aux4;
+          }
+        }
+        *(vetorResult) = binDecimal(v, n);
+      }
+      else{
+        for(l=0;l<n;l++){
+          if(l==0){
+            aux = *(v+l);
+            aux2 = *(v+l+1);
+            *(v+l) = *(v+n-1);
+            *(v+l+1) = aux;
+          }
+          if(l==1){
+            aux = *(v+l+2);
+            aux3 = *(v+l+1);
+            *(v+l+1) = aux2;
+            *(v+l+2) = aux3;
+          }
+          if (l>1){
+            aux4 = *(v+l+2);
+            *(v+l+2) = aux;
+            aux = aux4;
+          }
+        }
+        *(vetorResult+i) = binDecimal(v, n);
+      }
+    }
+    result = valorMinimo(n, vetorResult);
     return result;
 }
