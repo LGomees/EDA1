@@ -3,12 +3,12 @@
 #include <math.h>
 
 //1 - Abre arquivo e armazena em uma matriz o valor de cada pixel da imagem
-//2 - Função que rotacione um vetor, pegue o ultimo elemento do vetor e coloque como o primeiro elemento
-//3 - Função que use a função de rotacionar para rotacionar-lo até voltar ao vetor inicial, e comparar o 
+//2 OK - Função que rotacione um vetor, pegue o ultimo elemento do vetor e coloque como o primeiro elemento
+//3 - Função que use a função de rotacionar para rotacionar-lo até voltar ao vetor inicial, e comparar o
 //valor do vetor em decimal e armazenar o menor desses valores
 //4 - Função que transforme um vetor de numeros binarios em um numero decimal
 //5 - Cada pixel (8) deve ser comparado com seus vizinhos
-//6 - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1, 
+//6 - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1,
 //onde 0 será se o valor do elemento correspondente for menor do que a média
 //7 - Função que faça a media do valor dos elementos da matriz que representa um pixel
 //8 - Função que faça a formula de contraste
@@ -16,17 +16,19 @@
 //10 - Função que faça a formula de homogenidade
 
 int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
+int trocarPosBin(int, int);
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
 int valorMinimo(int, int*); // tamanho do vetor, vetor
 int valorMaximo(int, int*); // tamanho do vetor, vetor
 int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
 
+
 int main () {
     int *p, *q;
     float result = 0;
-    int n = 2, i = 0;
-
-    p = alocaVectorInt(n);
+    int n = 2, i, j, l, aux, aux2, aux3, aux4, k = 9;
+    int vetorBin[k];
+    /*p = alocaVectorInt(n);
     q = alocaVectorInt(n);
 
     for(i=0; i<n; i++){
@@ -41,7 +43,65 @@ int main () {
     printf("%.2f \n", result);
 
     free(p);
-    free(q);
+    free(q);*/
+    printf("Digite um conjunto de valores:\n");
+    for(i=0;i<k;i++) {
+      scanf("%d", &vetorBin[i]);
+    }
+
+    for(i = 0;i < k;i++){
+
+      if(i==0){
+        aux = vetorBin[i];
+        aux2 = vetorBin[i+1];
+        for(l=0;l<k;l++){
+          if(l==0){
+            vetorBin[l] = vetorBin[k-1];
+            vetorBin[l+1] = aux;
+          }
+          if(l==1){
+            aux = vetorBin[l+2];
+            aux3 = vetorBin[l+1];
+            vetorBin[l+1] = aux2;
+            vetorBin[l+2] = aux3;
+          }
+          if (l>1){
+            aux4 = vetorBin[l+2];
+            vetorBin[l+2] = aux;
+            aux = aux4;
+          }
+        }
+        for (j = 0; j < k; j++) {
+          printf(" %d ",  vetorBin[j]);
+        }
+        printf("\n");
+      }
+      else{
+        for(l=0;l<k;l++){
+          if(l==0){
+            aux = vetorBin[l];
+            aux2 = vetorBin[l+1];
+            vetorBin[l] = vetorBin[k-1];
+            vetorBin[l+1] = aux;
+          }
+          if(l==1){
+            aux = vetorBin[l+2];
+            aux3 = vetorBin[l+1];
+            vetorBin[l+1] = aux2;
+            vetorBin[l+2] = aux3;
+          }
+          if (l>1){
+            aux4 = vetorBin[l+2];
+            vetorBin[l+2] = aux;
+            aux = aux4;
+          }
+        }
+        for (j = 0; j < k; j++) {
+          printf(" %d ",  vetorBin[j]);
+        }
+        printf("\n");
+      }
+    }
 
     return 0;
 }
@@ -54,6 +114,11 @@ int *alocaVectorInt(int n){
     }
     return vet;
 }
+
+/*int *trocarPosBin(int k, int aux){
+
+  return vetorBin;
+}*/
 
 float distanciaEuclidiana(int n, int* p, int* q) {
     float result = 0;
@@ -102,4 +167,3 @@ int *normalizar(int n, int* x){
     }
     return result;
 }
-
