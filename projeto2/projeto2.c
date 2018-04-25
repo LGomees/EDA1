@@ -8,12 +8,15 @@
 //valor do vetor em decimal e armazenar o menor desses valores
 //4 OK - Função que transforme um vetor de numeros binarios em um numero decimal
 //5 - Cada pixel (8) deve ser comparado com seus vizinhos
-//6 - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1,
-//onde 0 será se o valor do elemento correspondente for menor do que a média
-//7 - Função que faça a media do valor dos elementos da matriz que representa um pixel
+//6 OK - Função que compare os pixels vizinhos e retorna uma matriz em que cada elemento será 0 ou 1,
+//       onde 0 será se o valor do elemento correspondente for menor do que a média
+//7 OK - Função que faça a media do valor dos elementos da matriz que representa um pixel
 //8 - Função que faça a formula de contraste
 //9 - Função que faça a formula de energia
 //10 - Função que faça a formula de homogenidade
+//11 - Função que sorteia 25 numeros de 50 para fazer parte do conjunto de treinamento
+//12 - Função que obtem os numeros restantes da função anterior
+//13 - Função que conta a altura e largura de uma imagem
 
 int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
 int *alocaMatrizInt(int, int); //numero de linhas e colunas
@@ -25,6 +28,7 @@ int binDecimal(int*, int); // retorna o valor em decimal e passa o vetor de bina
 int rotacionaVetor(int*, int); // recebe o vetor a ser rotacionado e o tamanho do mesmo, retornando o vetor com menor valor decimal
 float mediaMatriz(int*, int, int); // recebe a matriz e o tamanho de linhas e colunas da mesma, retornando a media do valor de seus elementos
 int *transfMatriz(int*, int, int, float); // recebe uma matriz e o tamanho de linhas e colunas da mesma e a media dos seus elementos, retornando a matriz transformada em 0's e 1's
+int *geraNumerosAleatorios(int, int); // recebe o valor minimo e o maximo do numero a ser gerado e retorna um vetor em que as posições do vetor que seja igual a 1 são os numeros gerados
 
 
 int main () {
@@ -33,27 +37,30 @@ int main () {
     int resultado = 0;
     int n = 2, i, j, k=9, lin=3, col=3;
 
-    p = alocaMatrizInt(lin, col);
-    q = alocaMatrizInt(lin, col);
+    //p = geraNumerosAleatorios(1, 50); ERROR
 
-    for(i=0; i<lin; i++){
-        for(j=0; j<col; j++){
-            scanf("%d", p+(i*col)+j);
-        }
-    }
+
+
+    //q = alocaMatrizInt(lin, col);
+
+    // for(i=0; i<lin; i++){
+    //     for(j=0; j<col; j++){
+    //         scanf("%d", p+(i*col)+j);
+    //     }
+    // }
     
-    result = mediaMatriz(p, lin, col);
-    printf("%.2f \n", result);
+    // result = mediaMatriz(p, lin, col);
+    // printf("%.2f \n", result);
 
-    q = transfMatriz(p, lin, col, result);
+    // q = transfMatriz(p, lin, col, result);
 
-    for(i=0; i<lin; i++){
-        for(j=0; j<col; j++){
-            printf("%d", *(q+(i*col)+j));
-        }
-        printf("\n");
-    }
-    printf("\n");
+    // for(i=0; i<lin; i++){
+    //     for(j=0; j<col; j++){
+    //         printf("%d", *(q+(i*col)+j));
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n");
 
     //resultado = rotacionaVetor(p, k);
 
@@ -236,4 +243,22 @@ int *transfMatriz(int* m, int lin, int col, float media){
     }
 
     return matTransf;
+}
+
+int *geraNumerosAleatorios(int min, int max){
+    int* vet, cont = 0;
+    vet = alocaVectorInt(max - min);
+
+    do{
+        cont = 0;
+        int numAleatorio = rand() % max + min;
+        *(vet+numAleatorio) = 1;
+        for(int i=0; i<(max - min); i++){
+            if(*(vet+i) == 1){
+                cont++;
+            }
+        }
+    }while(cont<25);
+
+    return vet;
 }
