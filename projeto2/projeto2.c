@@ -24,6 +24,8 @@ int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como e
 int binDecimal(int*, int); // retorna o valor em decimal e passa o vetor de binado como parametro
 int rotacionaVetor(int*, int); // recebe o vetor a ser rotacionado e o tamanho do mesmo, retornando o vetor com menor valor decimal
 float mediaMatriz(int*, int, int); // recebe a matriz e o tamanho de linhas e colunas da mesma, retornando a media do valor de seus elementos
+int *transfMatriz(int*, int, int, float); // recebe uma matriz e o tamanho de linhas e colunas da mesma e a media dos seus elementos, retornando a matriz transformada em 0's e 1's
+
 
 int main () {
     int *p, *q;
@@ -31,8 +33,27 @@ int main () {
     int resultado = 0;
     int n = 2, i, j, k=9, lin=3, col=3;
 
+    p = alocaMatrizInt(lin, col);
+    q = alocaMatrizInt(lin, col);
+
+    for(i=0; i<lin; i++){
+        for(j=0; j<col; j++){
+            scanf("%d", p+(i*col)+j);
+        }
+    }
     
-    //result = mediaMatriz(p, lin, col);
+    result = mediaMatriz(p, lin, col);
+    printf("%.2f \n", result);
+
+    q = transfMatriz(p, lin, col, result);
+
+    for(i=0; i<lin; i++){
+        for(j=0; j<col; j++){
+            printf("%d", *(q+(i*col)+j));
+        }
+        printf("\n");
+    }
+    printf("\n");
 
     //resultado = rotacionaVetor(p, k);
 
@@ -191,10 +212,28 @@ int rotacionaVetor(int* v, int n){
 
 float mediaMatriz(int* m, int lin, int col){
     float resultado = 0.0f;
+
     for(int i=0; i<lin; i++){
         for(int j=0; j<col; j++){
             resultado += *(m+(i*col)+j);
         }
     }
     return (float)(resultado / (lin*col));
+}
+
+int *transfMatriz(int* m, int lin, int col, float media){
+    int* matTransf;
+    matTransf = alocaMatrizInt(lin, col);
+
+    for(int i=0; i<lin; i++){
+        for(int j=0; j<col; j++){
+            if(*(m+(i*col)+j) > media){
+                *(matTransf+(i*col)+j) = 1;
+            } else {
+                *(matTransf+(i*col)+j) = 0;
+            }
+        }
+    }
+
+    return matTransf;
 }
