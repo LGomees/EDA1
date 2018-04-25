@@ -16,27 +16,25 @@
 //10 - Função que faça a formula de homogenidade
 
 int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
-int trocarPosBin(int, int);
+int *alocaMatrizInt(int, int); //numero de linhas e colunas
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
 int valorMinimo(int, int*); // tamanho do vetor, vetor
 int valorMaximo(int, int*); // tamanho do vetor, vetor
 int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
 int binDecimal(int*, int); // retorna o valor em decimal e passa o vetor de binado como parametro
-int rotacionaVetor(int*, int);
+int rotacionaVetor(int*, int); // recebe o vetor a ser rotacionado e o tamanho do mesmo, retornando o vetor com menor valor decimal
+float mediaMatriz(int*, int, int); // recebe a matriz e o tamanho de linhas e colunas da mesma, retornando a media do valor de seus elementos
 
 int main () {
     int *p, *q;
     float result = 0;
     int resultado = 0;
-    int n = 2, i, k=9;
+    int n = 2, i, j, k=9, lin=3, col=3;
 
-    p = alocaVectorInt(k);
     
-    for(i=0; i<k; i++){
-        scanf("%d", p+i);
-    }
+    //result = mediaMatriz(p, lin, col);
 
-    resultado = rotacionaVetor(p, k);
+    //resultado = rotacionaVetor(p, k);
 
     /*
     q = alocaVectorInt(n);
@@ -68,10 +66,14 @@ int *alocaVectorInt(int n){
     return vet;
 }
 
-/*int *trocarPosBin(int k, int aux){
-
-  return vetorBin;
-}*/
+int *alocaMatrizInt(int l, int c){
+    int* matriz = (int*) calloc(l*c, sizeof(int));
+    if(matriz == NULL){
+        printf("Alocacao falhou. Finalizado \n");
+        exit(1);
+    }
+    return matriz;
+}
 
 float distanciaEuclidiana(int n, int* p, int* q) {
     float result = 0;
@@ -185,4 +187,14 @@ int rotacionaVetor(int* v, int n){
     }
     result = valorMinimo(n, vetorResult);
     return result;
+}
+
+float mediaMatriz(int* m, int lin, int col){
+    float resultado = 0.0f;
+    for(int i=0; i<lin; i++){
+        for(int j=0; j<col; j++){
+            resultado += *(m+(i*col)+j);
+        }
+    }
+    return (float)(resultado / (lin*col));
 }
