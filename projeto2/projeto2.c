@@ -14,7 +14,7 @@
 //8 - Função que faça a formula de contraste
 //9 - Função que faça a formula de energia
 //10 - Função que faça a formula de homogenidade
-//11 - Função que sorteia 25 numeros de 50 para fazer parte do conjunto de treinamento
+//11 OK - Função que sorteia 25 numeros de 50 para fazer parte do conjunto de treinamento
 //12 - Função que obtem os numeros restantes da função anterior
 //13 - Função que conta a altura e largura de uma imagem
 
@@ -37,9 +37,7 @@ int main () {
     int resultado = 0;
     int n = 2, i, j, k=9, lin=3, col=3;
 
-    //p = geraNumerosAleatorios(1, 50); ERROR
-
-
+    p = geraNumerosAleatorios(1, 50);
 
     //q = alocaMatrizInt(lin, col);
 
@@ -247,13 +245,13 @@ int *transfMatriz(int* m, int lin, int col, float media){
 
 int *geraNumerosAleatorios(int min, int max){
     int* vet, cont = 0;
-    vet = alocaVectorInt(max - min);
+    vet = alocaVectorInt(max);
 
     do{
         cont = 0;
-        int numAleatorio = rand() % max + min;
-        *(vet+numAleatorio) = 1;
-        for(int i=0; i<(max - min); i++){
+        int numAleatorio = rand() % max;
+        *(vet+(numAleatorio)) = 1;
+        for(int i=0; i<max; i++){
             if(*(vet+i) == 1){
                 cont++;
             }
