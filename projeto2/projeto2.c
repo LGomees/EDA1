@@ -30,7 +30,9 @@ int rotacionaVetor(int*, int); // recebe o vetor a ser rotacionado e o tamanho d
 float mediaMatriz(int*, int, int); // recebe a matriz e o tamanho de linhas e colunas da mesma, retornando a media do valor de seus elementos
 int *transfMatriz(int*, int, int, float); // recebe uma matriz e o tamanho de linhas e colunas da mesma e a media dos seus elementos, retornando a matriz transformada em 0's e 1's
 int *geraNumerosAleatorios(int, int); // recebe o valor minimo e o maximo do numero a ser gerado e retorna um vetor em que as posições do vetor que seja igual a 1 são os numeros gerados
-
+float contraste(int*, int, int);
+float energia(int*, int, int);
+float homogenidade(int*, int, int);
 
 int main () {
     int *p, *q, *f;
@@ -351,4 +353,64 @@ int *geraNumerosAleatorios(int min, int max){
     }while(cont<25);
 
     return vet;
+}
+
+float contraste(int* m, int lin, int col) {
+    int soma = 0;
+    float result = 0;
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            soma += *(m+(i*col)+j);
+        }
+    }
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            result += pow((i - j), 2) * ((float) *(m+(i*col)+j) / soma);
+        }
+    }
+
+    return result;
+}
+
+float energia(int* m, int lin, int col) {
+    int soma = 0;
+    float result = 0;
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            soma += *(m+(i*col)+j);
+        }
+    }
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            result += pow(((float) *(m+(i*col)+j) / soma), 2);
+        }
+    }
+
+    return result;
+}
+
+float homogenidade(int* m, int lin, int col) {
+    int soma = 0;
+    int auxResult; 
+    float result = 0;
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            soma += *(m+(i*col)+j);
+        }
+    }
+
+    for(int i=0; i<lin; i++) {
+        for(int j=0; j<col; j++) {
+            auxResult = i - j;
+            if(auxResult < 0){
+                auxResult *= (-1);
+            }
+            result += ((float) *(m+(i*col)+j) / soma) / (auxResult + 1);
+        }
+    }
 }
