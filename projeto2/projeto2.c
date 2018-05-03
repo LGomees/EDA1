@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 //1 - Abre arquivo e armazena em uma matriz o valor de cada pixel da imagem
 //2 OK - Função que rotacione um vetor, pegue o ultimo elemento do vetor e coloque como o primeiro elemento
@@ -15,9 +16,9 @@
 //9 - Função que faça a formula de energia
 //10 - Função que faça a formula de homogenidade
 //11 OK - Função que sorteia 25 numeros de 50 para fazer parte do conjunto de treinamento
-//12 - Função que obtem os numeros restantes da função anterior
 //13 - Função que conta a altura e largura de uma imagem
 
+char *alocaVetorChar(int n); // tamanho do vetor, vetor a ser alocado
 int *alocaVectorInt(int); // tamanho do vetor, vetor a ser alocado
 int *alocaMatrizInt(int, int); //numero de linhas e colunas
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
@@ -32,12 +33,58 @@ int *geraNumerosAleatorios(int, int); // recebe o valor minimo e o maximo do num
 
 
 int main () {
-    int *p, *q;
-    float result = 0;
-    int resultado = 0;
+    int *p, *q, *f;
     int n = 2, i, j, k=9, lin=3, col=3;
+    int *altura, *largura;
+    FILE **asphaltFiles = malloc(sizeof(FILE*) * (50));
+    FILE **grassFiles = malloc(sizeof(FILE*) * (50));
+    altura = alocaVectorInt(50);
+    largura = alocaVectorInt(50);
 
-    p = geraNumerosAleatorios(1, 50);
+    f = geraNumerosAleatorios(1, 50);
+
+    for(i=0; i<50; i++){
+        if(*(f+i) == 1){
+        char asphalt[35];
+        char grass[35];
+        int auxNum = i+1;
+        char aux[2];
+            if(auxNum <= 9){
+                sprintf(asphalt, "./DataSet/asphalt/asphalt_0%d.txt", auxNum);
+                sprintf(grass, "./DataSet/grass/grass_0%d.txt", auxNum);
+            } else {
+                sprintf(asphalt, "./DataSet/asphalt/asphalt_%d.txt", auxNum);
+                sprintf(grass, "./DataSet/grass/grass_%d.txt", auxNum);
+            }
+
+            *(asphaltFiles + i) = fopen( asphalt, "r");
+            if(*(asphaltFiles + i) == NULL){
+                printf("Falha em alocar os arquivos! \n");
+                exit(1);
+            }
+
+            *(grassFiles + i) = fopen( grass, "r");
+            if(*(grassFiles + i) == NULL){
+                printf("Falha em alocar os arquivos! \n");
+                exit(1);
+            }
+            char x;
+            int stop = 0;
+            while (!feof(*(asphaltFiles + i))){
+                fscanf(*(asphaltFiles + i), "%c", &x);
+                if(x == ';' && stop == 0){
+                    *(largura + i) += 1;
+                } else if (x == '\0'){
+                    *(altura + i) += 1;
+                    stop = 1;
+                }
+            }
+             //printf("Altura: %d, Largura: %d, Arquivo: %d\n", *(altura + i), *(largura + i), i+1);
+        }
+    }
+    
+    
+
 
     //q = alocaMatrizInt(lin, col);
 
@@ -81,6 +128,15 @@ int main () {
     
 
     return 0;
+}
+
+char *alocaVetorChar(int n){
+    char *vet = (char*) calloc(n, sizeof(char));
+    if(vet == NULL){
+        printf("Alocacao falhou. Finalizado. \n");
+        exit(1);
+    }
+    return vet;
 }
 
 int *alocaVectorInt(int n){
