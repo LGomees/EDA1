@@ -34,97 +34,137 @@ int *geraNumerosAleatorios(int, int); // recebe o valor minimo e o maximo do num
 
 int main () {
     int *p, *q, *f;
-    int n = 2, i, j, k=9, lin=3, col=3;
-    int *altura, *largura;
+    int n = 2, i, j, u=9, lin=3, col=3;
+    int *alturaAsp, *larguraAsp, *alturaGr, *larguraGr;
+    int *pixels; //matriz que irá armazenar os dados de cada arquivo
     FILE **asphaltFiles = malloc(sizeof(FILE*) * (50));
     FILE **grassFiles = malloc(sizeof(FILE*) * (50));
-    altura = alocaVectorInt(50);
-    largura = alocaVectorInt(50);
+    alturaAsp = alocaVectorInt(50);
+    larguraAsp = alocaVectorInt(50);
+    alturaGr = alocaVectorInt(50);
+    larguraGr = alocaVectorInt(50);
 
     f = geraNumerosAleatorios(1, 50);
 
-    for(i=0; i<50; i++){
-        if(*(f+i) == 1){
+    // this for open and read the heigth/width of 25 files, that is the 25 for training
+    for(i=0; i<1; i++){
         char asphalt[35];
         char grass[35];
         int auxNum = i+1;
         char aux[2];
-            if(auxNum <= 9){
-                sprintf(asphalt, "./DataSet/asphalt/asphalt_0%d.txt", auxNum);
-                sprintf(grass, "./DataSet/grass/grass_0%d.txt", auxNum);
-            } else {
-                sprintf(asphalt, "./DataSet/asphalt/asphalt_%d.txt", auxNum);
-                sprintf(grass, "./DataSet/grass/grass_%d.txt", auxNum);
-            }
-
-            *(asphaltFiles + i) = fopen( asphalt, "r");
-            if(*(asphaltFiles + i) == NULL){
-                printf("Falha em alocar os arquivos! \n");
-                exit(1);
-            }
-
-            *(grassFiles + i) = fopen( grass, "r");
-            if(*(grassFiles + i) == NULL){
-                printf("Falha em alocar os arquivos! \n");
-                exit(1);
-            }
-            char x;
-            int stop = 0;
-            while (!feof(*(asphaltFiles + i))){
-                fscanf(*(asphaltFiles + i), "%c", &x);
-                if(x == ';' && stop == 0){
-                    *(largura + i) += 1;
-                } else if (x == '\0'){
-                    *(altura + i) += 1;
-                    stop = 1;
-                }
-            }
-             //printf("Altura: %d, Largura: %d, Arquivo: %d\n", *(altura + i), *(largura + i), i+1);
+        if(auxNum <= 9){
+            sprintf(asphalt, "./DataSet/asphalt/asphalt_0%d.txt", auxNum);
+            sprintf(grass, "./DataSet/grass/grass_0%d.txt", auxNum);
+        } else {
+            sprintf(asphalt, "./DataSet/asphalt/asphalt_%d.txt", auxNum);
+            sprintf(grass, "./DataSet/grass/grass_%d.txt", auxNum);
         }
+
+        *(asphaltFiles + i) = fopen( asphalt, "r");
+        if(*(asphaltFiles + i) == NULL){
+            printf("Falha em alocar os arquivos! \n");
+            exit(1);
+        }
+
+        *(grassFiles + i) = fopen( grass, "r");
+        if(*(grassFiles + i) == NULL){
+            printf("Falha em alocar os arquivos! \n");
+            exit(1);
+        }
+        char x;
+        int stop = 0;
+        *(larguraAsp + i) = 1; // largura começa com 1, pois o seu ultimo pixel da linha não possui o ';'
+        do {
+            fscanf(*(asphaltFiles + i), "%c", &x);
+            if(x == ';' && stop == 0){
+                *(larguraAsp + i) += 1;
+            } else if (x == '\n'){
+                *(alturaAsp + i) += 1;
+                stop = 1;
+            }
+        } while (!feof(*(asphaltFiles + i)));
+        *(alturaAsp + i) -= 1; // retirando 1 da altura, pois na sua ultima linha de pixel, possui um \n para uma linha vazia
+        printf("Asphalt - Altura: %d, Largura: %d, Arquivo: %d\n", *(alturaAsp + i), *(larguraAsp + i), i+1);
+        
+        rewind(*(asphaltFiles + i));
+        pixels = alocaMatrizInt(*(alturaAsp + i), *(larguraAsp + i));
+        char aux2[] = "000";
+        int y = 0, cont = 0;
+        do{
+            fscanf(*(asphaltFiles + i), "%c", &x);
+            if(x == ';' || x == '\n'){
+                y = 0;
+                *(pixels + cont) = atoi(aux2);
+                cont++;
+            } else {
+                aux2[y] = x;
+                y++;
+            }
+        } while (!feof(*(asphaltFiles + i)));
+
+        lin = *(alturaAsp + i);
+        col = *(larguraAsp + i);
+        int *matrizAux = alocaMatrizInt(3,3);
+        int *matrizAuxBin;
+        int auxK, auxJ;
+        // começa em 1 e termina em x-1, pois não ira ler o primeira nem o ultima linha/coluna da matriz
+        for(int k=1; k<(lin-1); k++){
+            for(int j=1; j<(col-1); j++){
+                auxK = k-1;
+                auxJ = j-1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j+1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxK = k;
+                auxJ = j-1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j+1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxK = k+1;
+                auxJ = j-1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+                auxJ = j+1;
+                *(matrizAux+(auxK*3)+auxJ) = *(pixels+(k*col)+j);
+
+                float mediaMatrizAux = mediaMatriz(matrizAux, 3, 3);
+                matrizAuxBin = transfMatriz(matrizAux, 3, 3, mediaMatrizAux);
+
+                int valorMinDecimal = rotacionaVetor(matrizAuxBin, 3*3);
+            }
+        }
+
+        stop = 0;
+        *(larguraGr + i) = 1; // largura começa com 1, pois o seu ultimo pixel da linha não possui o ';'
+        do {
+            fscanf(*(grassFiles + i), "%c", &x);
+            if(x == ';' && stop == 0){
+                *(larguraGr + i) += 1;
+            } else if (x == '\n'){
+                *(alturaGr + i) += 1;
+                stop = 1;
+            }
+        } while (!feof(*(grassFiles + i)));
+        *(alturaGr + i) -= 1; // retirando 1 da altura, pois na sua ultima linha de pixel, possui um \n para uma linha vazia
+        printf("Grass - Altura: %d, Largura: %d, Arquivo: %d\n", *(alturaGr + i), *(larguraGr + i), i+1);
     }
-    
-    
 
-
-    //q = alocaMatrizInt(lin, col);
-
-    // for(i=0; i<lin; i++){
-    //     for(j=0; j<col; j++){
-    //         scanf("%d", p+(i*col)+j);
-    //     }
-    // }
-    
-    // result = mediaMatriz(p, lin, col);
-    // printf("%.2f \n", result);
-
-    // q = transfMatriz(p, lin, col, result);
-
-    // for(i=0; i<lin; i++){
-    //     for(j=0; j<col; j++){
-    //         printf("%d", *(q+(i*col)+j));
-    //     }
-    //     printf("\n");
-    // }
-    // printf("\n");
-
-    //resultado = rotacionaVetor(p, k);
-
-    /*
-    q = alocaVectorInt(n);
-
-    for(i=0; i<n; i++){
-        printf("Digite o termo %d de p: ", i);
-        scanf("%d", p+i);
-        printf("Digite o termo %d de q: ", i);
-        scanf("%d", q+i);
+    for(i=0; i<50; i++){
+        fclose(*(asphaltFiles + i));
+        fclose(*(grassFiles + i));
     }
 
-    result = distanciaEuclidiana(n, p, q);
-
-    printf("%.2f \n", result);
-
-    free(p);
-    free(q);*/
+    free(f);
+    free(pixels);
+    free(alturaAsp);
+    free(larguraAsp);
+    free(alturaGr);
+    free(larguraGr);
     
 
     return 0;
