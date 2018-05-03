@@ -24,7 +24,7 @@ int *alocaMatrizInt(int, int); //numero de linhas e colunas
 float distanciaEuclidiana(int, int*, int*); // tamanho dos vetores, primeiro vetor, segundo vetor
 int valorMinimo(int, int*); // tamanho do vetor, vetor
 int valorMaximo(int, int*); // tamanho do vetor, vetor
-int *normalizar(int, int*); // retorna o endereço do vetor normalizado e como entrada tamanho do vetor e vetor a ser normalizado
+void *normalizar(int, int*, int*); // retorna o endereço do vetor normalizado por referencia e como entrada tamanho do vetor e vetor a ser normalizado
 int binDecimal(int*, int); // retorna o valor em decimal e passa o vetor de binado como parametro
 int rotacionaVetor(int*, int); // recebe o vetor a ser rotacionado e o tamanho do mesmo, retornando o vetor com menor valor decimal
 float mediaMatriz(int*, int, int); // recebe a matriz e o tamanho de linhas e colunas da mesma, retornando a media do valor de seus elementos
@@ -106,7 +106,9 @@ int main () {
         col = *(larguraAsp + i);
         int *matrizAux = alocaMatrizInt(3,3);
         int *matrizAuxBin;
-        int auxK, auxJ;
+        int *vetorResult = alocaVectorInt(lin*col);
+        int *matrizNormalizada = alocaMatrizInt(50, lin*col);
+        int auxK, auxJ, auxVet = 0;
         // começa em 1 e termina em x-1, pois não ira ler o primeira nem o ultima linha/coluna da matriz
         for(int k=1; k<(lin-1); k++){
             for(int j=1; j<(col-1); j++){
@@ -135,9 +137,11 @@ int main () {
                 float mediaMatrizAux = mediaMatriz(matrizAux, 3, 3);
                 matrizAuxBin = transfMatriz(matrizAux, 3, 3, mediaMatrizAux);
 
-                int valorMinDecimal = rotacionaVetor(matrizAuxBin, 3*3);
+                *(vetorResult + auxVet) = rotacionaVetor(matrizAuxBin, 3*3);
+                auxVet++;
             }
         }
+        normalizar( col*lin, vetorResult, (matrizNormalizada+(i*col*lin)));
 
         stop = 0;
         *(larguraGr + i) = 1; // largura começa com 1, pois o seu ultimo pixel da linha não possui o ';'
@@ -154,18 +158,12 @@ int main () {
         printf("Grass - Altura: %d, Largura: %d, Arquivo: %d\n", *(alturaGr + i), *(larguraGr + i), i+1);
     }
 
-    for(i=0; i<50; i++){
-        fclose(*(asphaltFiles + i));
-        fclose(*(grassFiles + i));
-    }
-
     free(f);
     free(pixels);
     free(alturaAsp);
     free(larguraAsp);
     free(alturaGr);
     free(larguraGr);
-    
 
     return 0;
 }
@@ -233,16 +231,14 @@ int valorMaximo(int n, int* x){
     return max;
 }
 
-int *normalizar(int n, int* x){
-    int *result, min, max;
+void *normalizar(int n, int* x, int* v){
+    int min, max;
     min = valorMinimo(n, x);
     max = valorMaximo(n, x);
-    result = alocaVectorInt(n);
 
     for(int i=0; i<n; i++){
-        *(result+i) = (*(x+i) - min) / (max - min);
+        *(v+i) = (*(x+i) - min) / (max - min);
     }
-    return result;
 }
 
 int binDecimal(int * v, int n){
