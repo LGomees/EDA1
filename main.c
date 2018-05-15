@@ -72,46 +72,44 @@ void libera(Pessoa *l) {
 void lerArquivo(FILE *file, Pessoa *contato) {
     char x;
     int cont = 0, contData = 0;
-    char cepStr[10] = "";
+    char cepStr[11] = "";
     char nome[100] = "";
-    char telefone[10] = "";
+    char aux[100] = "";
+    char telefone[11] = "";
     char endereco[100] = "";
     unsigned int cep;
-    char dataDeNascimento[10] = "";
+    char dataDeNascimento[11] = "";
     do {
         printf("cont: %d, x: %c\n", cont, x);
-        fscanf(file, "%c", &x);
-        if(cont == 0 && x != '\n') {
-            strcat(nome, &x);
+        if(cont == 0) {
+            fgets(nome, 100, file);
             printf("nome: %s\n", nome);
-        } else if (cont == 1 && x != '\n') {
-            strcat(telefone, &x);
+            cont++;
+        } else if (cont == 1) {
+            fgets(telefone, 11, file);
             printf("telefone: %s\n", telefone);
-        } else if (cont == 2 && x != '\n') {
-            strcat(endereco, &x);
+            cont++;
+        } else if (cont == 2) {
+            fgets(endereco, 100, file);
             printf("endereco: %s\n", endereco);
-        } else if (cont == 3 && x != '\n') {
-            strcat(cepStr, &x);
+            cont++;
+        } else if (cont == 3) {
+            fgets(cepStr, 11, file);
             cep = atoi(cepStr);
             printf("cep: %d\n", cep);
-        } else if (cont == 4 && x != '\n') {
-            strcat(dataDeNascimento, &x);
-            contData++;
-            if(contData == 2 || contData == 4) {
-                strcat(dataDeNascimento, "/");
-            }
-            printf("data: %s\n", dataDeNascimento);
-        }
-        if(x == '\n'){
             cont++;
-        } else if (x == '$') {
+        } else if (cont == 4) {
+            fgets(dataDeNascimento, 11, file);
+            printf("data: %s\n", dataDeNascimento);
+            cont++;
+        } else if (cont == 5) {
+            fgets(nome, 100, file);
             contato->nome = (char*) malloc(sizeof(char)*100);
             contato->telefone = (char*) malloc(sizeof(char)*10);
             contato->endereco = (char*) malloc(sizeof(char)*100);
             contato->dataDeNascimento = (char*) malloc(sizeof(char)*10);
-            printf("5\n");
             contato = insereInicio(contato, nome, telefone, endereco, cep, dataDeNascimento);
-            cont = -1;
+            cont = 0;
             printf("6\n");
         }
     } while(!feof(file));
