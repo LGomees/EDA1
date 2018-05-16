@@ -91,15 +91,20 @@ int main () {
                 scanf("%u", &novoCep);
                 printf("Data de Nascimento: ");
                 scanf("%s", novaDataDeNascimento);
-                printf("Preenchido com sucesso\n");
                 strcat(novoNome, "\n");
                 strcat(novoTelefone, "\n");
                 strcat(novoEndereco, "\n");
                 strcat(novaDataDeNascimento, "\n");
                 contatos = insereInicio(contatos, novoNome, novoTelefone, \
                 novoEndereco, novoCep, novaDataDeNascimento);
+                printf("Preenchido com sucesso\n");
+                printf("\n\n\n\n");
                 break;
             case 2:
+                printf("Nome: ");
+                scanf("%s", novoNome);
+                contatos = removeContato(contatos, novoNome);
+                printf("%s removido com sucesso!\n", novoNome);
                 break;
             case 3:
                 break;
