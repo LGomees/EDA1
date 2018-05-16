@@ -23,6 +23,7 @@ void reescreveArquivo(Pessoa *l);
 int main () {
     Pessoa *contatos;
     contatos = criaListaVazia();
+    int status;
     FILE *contatosFile = fopen("./contatos.txt", "r+");
     if (contatosFile == NULL) {
         printf("Falha na alocação do arquivo!\n");
@@ -61,9 +62,60 @@ int main () {
         }
     } while(!feof(contatosFile));
 
-    //imprime(contatos);
+    do {
+        printf("Escolha uma das opcoes seguintes:\n");
+        printf("1 - Inserir novo registro\n");
+        printf("2 - Remover registros que possuem certo nome\n");
+        printf("3 - Visualizar registro a partir de nome\n");
+        printf("4 - Visualizar todos os registros em ordem alfabetica de acordo com o nome\n");
+        printf("5 - Sair\n");
+        printf("Sua escolha: ");
+        scanf("%d", &status);
+        printf("\n");
 
-    visualizaNome(contatos, "Toney Schaffner");
+        char novoNome[100] = "";
+        char novoTelefone[15] = "";
+        char novoEndereco[100] = "";
+        unsigned int novoCep;
+        char novaDataDeNascimento[15] = "";
+
+        switch(status) {
+            case 1:
+                printf("Nome: ");
+                scanf("%s", novoNome);
+                printf("Telefone: ");
+                scanf("%s", novoTelefone);
+                printf("Endereco: ");
+                scanf("%s", novoEndereco);
+                printf("CEP: ");
+                scanf("%u", &novoCep);
+                printf("Data de Nascimento: ");
+                scanf("%s", novaDataDeNascimento);
+                printf("Preenchido com sucesso\n");
+                strcat(novoNome, "\n");
+                strcat(novoTelefone, "\n");
+                strcat(novoEndereco, "\n");
+                strcat(novaDataDeNascimento, "\n");
+                contatos = insereInicio(contatos, novoNome, novoTelefone, \
+                novoEndereco, novoCep, novaDataDeNascimento);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                printf("Programa encerrado!\n");
+                break;
+            default:
+                printf("Escolha invalida, selecione uma opcao entre 1 e 5");
+                break;
+        }
+
+    } while(status != 5);
+
+    //imprime(contatos);
 
     reescreveArquivo(contatos);
     libera(contatos);
