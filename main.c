@@ -15,10 +15,10 @@ typedef struct pessoa {
 Pessoa *criaListaVazia();
 Pessoa *insereInicio(Pessoa *l, char*, char*, char*, unsigned int, char*);
 void libera(Pessoa *l);
-void lerArquivo(FILE *f, Pessoa *contato);
 void imprime(Pessoa *l);
 Pessoa *removeContato(Pessoa *l, char*);
 void visualizaNome(Pessoa *l, char*);
+void reescreveArquivo(Pessoa *l);
 
 
 int main () {
@@ -30,8 +30,47 @@ int main () {
         exit(1);
     }
 
-    lerArquivo(contatosFile, contatos);
-    //imprime(contatos);
+    int cont = 0, contData = 0;
+    char cepStr[12] = "";
+    char nome[100] = "";
+    char aux[100] = "";
+    char telefone[12] = "";
+    char endereco[100] = "";
+    unsigned int cep;
+    char dataDeNascimento[12] = "";
+    do {
+        if(cont == 0) {
+            fgets(nome, 100, contatosFile);
+            //printf("Nome: %s", nome);
+            cont++;
+        } else if (cont == 1) {
+            fgets(telefone, 15, contatosFile);
+            cont++;
+            //printf("Telefone: %s", telefone);
+        } else if (cont == 2) {
+            fgets(endereco, 100, contatosFile);
+            cont++;
+            //printf("Endereco: %s", endereco);
+        } else if (cont == 3) {
+            fgets(cepStr, 15, contatosFile);
+            cep = atoi(cepStr);
+            cont++;
+            //printf("CEP: %d\n", cep);
+        } else if (cont == 4) {
+            fgets(dataDeNascimento, 15, contatosFile);
+            cont++;
+            //printf("Data de Nascimento: %s", dataDeNascimento);
+        } else if (cont == 5) {
+            fgets(aux, 100, contatosFile);
+            contatos = insereInicio(contatos, nome, telefone, endereco, cep, dataDeNascimento);
+            cont = 0;
+            //imprime(contato);
+            printf("Nome: %s", contatos->nome);
+        }
+    } while(!feof(contatosFile));
+
+    reescreveArquivo(contatos);
+    libera(contatos);
 
     return 0;
 }
@@ -54,14 +93,14 @@ Pessoa *insereInicio(Pessoa *l, char *nome, char *telefone, char *endereco, unsi
     novo->endereco = endereco;
     novo->cep = cep;
     novo->dataDeNascimento = nascimento;
-    printf("Nome: %s\nTelefone: %s\nEndereco: %s\n", novo->nome, novo->telefone, novo->endereco);
+    //printf("Nome: %s\nTelefone: %s\nEndereco: %s\n", novo->nome, novo->telefone, novo->endereco);
 
     if(l == NULL) {
         novo->prox = NULL;
-        novo->ant = NULL;
+        //novo->ant = NULL;
         return novo;
     } else {
-        printf("DEPOIS - Nome: %s\nTelefone: %s\nEndereco: %s\n", l->nome, l->telefone, l->endereco);
+        //printf("DEPOIS - Nome: %s\nTelefone: %s\nEndereco: %s\n", l->nome, l->telefone, l->endereco);
         novo->prox = l;
         return novo;
     }
@@ -74,49 +113,6 @@ void libera(Pessoa *l) {
         aux = aux->prox;
         free(l);
     }
-}
-
-void lerArquivo(FILE *file, Pessoa *contato) {
-    char x;
-    int cont = 0, contData = 0;
-    char cepStr[12] = "";
-    char nome[100] = "";
-    char aux[100] = "";
-    char telefone[12] = "";
-    char endereco[100] = "";
-    unsigned int cep;
-    char dataDeNascimento[12] = "";
-    do {
-        if(cont == 0) {
-            fgets(nome, 100, file);
-            //printf("Nome: %s", nome);
-            cont++;
-        } else if (cont == 1) {
-            fgets(telefone, 12, file);
-            cont++;
-            //printf("Telefone: %s", telefone);
-        } else if (cont == 2) {
-            fgets(endereco, 100, file);
-            cont++;
-            //printf("Endereco: %s", endereco);
-        } else if (cont == 3) {
-            fgets(cepStr, 12, file);
-            cep = atoi(cepStr);
-            cont++;
-            //printf("CEP: %d\n", cep);
-        } else if (cont == 4) {
-            fgets(dataDeNascimento, 12, file);
-            cont++;
-            //printf("Data de Nascimento: %s", dataDeNascimento);
-        } else if (cont == 5) {
-            fgets(aux, 100, file);
-            contato = insereInicio(contato, nome, telefone, endereco, cep, dataDeNascimento);
-            cont = 0;
-            //imprime(contato);
-            *nome = '\0';
-        }
-    } while(!feof(file));
-
 }
 
 void imprime(Pessoa *l){
@@ -163,4 +159,24 @@ void visualizaNome(Pessoa *l, char* nome) {
             printf("Data de nascimento: %s\n", atual->dataDeNascimento);
         }
     }
+}
+
+void reescreveArquivo(Pessoa *l) {
+    Pessoa *aux;
+    FILE *contatosFile = fopen("./contatoss.txt", "w");
+    if (contatosFile == NULL) {
+        printf("Falha na alocação do arquivo!\n");
+        exit(1);
+    }
+
+    for(aux = l; aux != NULL; aux = aux->prox) {
+        printf("nome - %s", aux->nome);
+        fputs(aux->nome, contatosFile);
+        fputs(aux->telefone, contatosFile);
+        fputs(aux->endereco, contatosFile);
+        fprintf(contatosFile, "%d\n", aux->cep);
+        fputs(aux->dataDeNascimento, contatosFile);
+        fputs("$\n", contatosFile);
+    }
+    fclose(contatosFile);
 }
