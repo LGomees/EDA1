@@ -20,7 +20,6 @@ Pessoa *removeContato(Pessoa *l, char*);
 void visualizaNome(Pessoa *l, char*);
 void reescreveArquivo(Pessoa *l);
 
-
 int main () {
     Pessoa *contatos;
     contatos = criaListaVazia();
@@ -41,33 +40,30 @@ int main () {
     do {
         if(cont == 0) {
             fgets(nome, 100, contatosFile);
-            //printf("Nome: %s", nome);
             cont++;
         } else if (cont == 1) {
             fgets(telefone, 15, contatosFile);
             cont++;
-            //printf("Telefone: %s", telefone);
         } else if (cont == 2) {
             fgets(endereco, 100, contatosFile);
             cont++;
-            //printf("Endereco: %s", endereco);
         } else if (cont == 3) {
             fgets(cepStr, 15, contatosFile);
             cep = atoi(cepStr);
             cont++;
-            //printf("CEP: %d\n", cep);
         } else if (cont == 4) {
             fgets(dataDeNascimento, 15, contatosFile);
             cont++;
-            //printf("Data de Nascimento: %s", dataDeNascimento);
         } else if (cont == 5) {
             fgets(aux, 100, contatosFile);
             contatos = insereInicio(contatos, nome, telefone, endereco, cep, dataDeNascimento);
             cont = 0;
-            //imprime(contato);
-            printf("Nome: %s", contatos->nome);
         }
     } while(!feof(contatosFile));
+
+    //imprime(contatos);
+
+    visualizaNome(contatos, "Toney Schaffner");
 
     reescreveArquivo(contatos);
     libera(contatos);
@@ -88,19 +84,22 @@ Pessoa *insereInicio(Pessoa *l, char *nome, char *telefone, char *endereco, unsi
         exit(-1);
     }
 
-    novo->nome = nome;
-    novo->telefone = telefone;
-    novo->endereco = endereco;
+    novo->nome = (char*) malloc(sizeof(char)*100);
+    novo->telefone = (char*) malloc(sizeof(char)*15);
+    novo->endereco = (char*) malloc(sizeof(char)*100);
+    novo->dataDeNascimento = (char*) malloc(sizeof(char)*15);
+
+    strcpy(novo->nome, nome);
+    strcpy(novo->telefone, telefone);
+    strcpy(novo->endereco, endereco);
     novo->cep = cep;
-    novo->dataDeNascimento = nascimento;
-    //printf("Nome: %s\nTelefone: %s\nEndereco: %s\n", novo->nome, novo->telefone, novo->endereco);
+    strcpy(novo->dataDeNascimento, nascimento);
 
     if(l == NULL) {
         novo->prox = NULL;
         //novo->ant = NULL;
         return novo;
     } else {
-        //printf("DEPOIS - Nome: %s\nTelefone: %s\nEndereco: %s\n", l->nome, l->telefone, l->endereco);
         novo->prox = l;
         return novo;
     }
@@ -120,7 +119,7 @@ void imprime(Pessoa *l){
     int i = 0;
 
     for(aux = l; aux != NULL; aux = aux->prox) {
-        printf("%d ---------------------------- %p\n", i, aux);
+        printf("------------------------------\n");
         printf("Nome: %s\n", aux->nome);
         printf("Telefone: %s\n", aux->telefone);
         printf("Endereco: %s\n", aux->endereco);
@@ -137,7 +136,7 @@ Pessoa *removeContato(Pessoa *l, char* nome) {
     Pessoa *posterior;
 
     for(atual = l; atual != NULL; atual = atual->prox) {
-        if (nome == atual->nome) {
+        if (strncmp(atual->nome, nome, strlen(atual->nome)-2) == 0) {
             anterior = atual->ant;
             posterior = atual->prox;
             anterior->prox = atual->prox;
@@ -150,7 +149,7 @@ Pessoa *removeContato(Pessoa *l, char* nome) {
 void visualizaNome(Pessoa *l, char* nome) {
     Pessoa *atual;
     for(atual = l; atual != NULL; atual = atual->prox) {
-        if (nome == atual->nome) {
+        if (strncmp(atual->nome, nome, strlen(atual->nome)-2) == 0) {
             printf("-------------------------------\n");
             printf("Nome: %s", atual->nome);
             printf("Telefone: %s", atual->telefone);
@@ -170,7 +169,6 @@ void reescreveArquivo(Pessoa *l) {
     }
 
     for(aux = l; aux != NULL; aux = aux->prox) {
-        printf("nome - %s", aux->nome);
         fputs(aux->nome, contatosFile);
         fputs(aux->telefone, contatosFile);
         fputs(aux->endereco, contatosFile);
