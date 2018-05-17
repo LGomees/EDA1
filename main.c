@@ -111,15 +111,15 @@ int main () {
             case 2:
                 printf("Nome: ");
                 scanf("%s", novoNome);
+                puts(novoNome);
                 contatos = removeContato(contatos, novoNome);
                 printf("%s removido com sucesso!\n", novoNome);
-                contatos = ordenaLista(contatos);
                 break;
             case 3:
                 printf("Nome: ");
                 scanf("%s", novoNome);
+                puts(novoNome);
                 visualizaNome(contatos, novoNome);
-                printf("%s removido com sucesso!\n", novoNome);
                 break;
             case 4:
                 imprime(contatos);
@@ -205,7 +205,10 @@ Pessoa *removeContato(Pessoa *l, char* nome) {
     Pessoa *posterior;
 
     for(atual = l; atual != NULL; atual = atual->prox) {
+        puts(nome);
+        puts(atual->nome);
         if (strncmp(atual->nome, nome, strlen(atual->nome)-2) == 0) {
+            printf("Passou!\n");
             anterior = atual->ant;
             posterior = atual->prox;
             anterior->prox = atual->prox;
@@ -249,7 +252,7 @@ void reescreveArquivo(Pessoa *l) {
 }
 
 Pessoa *ordenaLista(Pessoa *l) {
-    int i, j;
+    int i = 0, j;
     Pessoa *atual;
     atual = (Pessoa*) malloc(sizeof(Pessoa));
     if(atual == NULL) {
@@ -265,24 +268,41 @@ Pessoa *ordenaLista(Pessoa *l) {
     Pessoa *aux;
     Pessoa *aux2;
 
-    for(aux = l->prox; aux != NULL; aux = aux->prox) {
+    for(aux = l->prox; aux != NULL; aux = aux->prox, i++) {
         strcpy(atual->nome, aux->nome);
         strcpy(atual->telefone, aux->telefone);
         strcpy(atual->endereco, aux->endereco);
         atual->cep = aux->cep;
         strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
-        for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant) {
-            strcpy(aux2->prox->nome, aux2->nome);
-            strcpy(aux2->prox->telefone, aux2->telefone);
-            strcpy(aux2->prox->endereco, aux2->endereco);
-            aux2->prox->cep = aux2->cep;
-            strcpy(aux2->prox->dataDeNascimento, aux2->dataDeNascimento);
+        if (i == 0) {
+            aux2 = aux->ant;
+            if (strcmp(atual->nome, aux2->nome) < 0) {
+                strcpy(aux2->prox->nome, aux2->nome);
+                strcpy(aux2->prox->telefone, aux2->telefone);
+                strcpy(aux2->prox->endereco, aux2->endereco);
+                aux2->prox->cep = aux2->cep;
+                strcpy(aux2->prox->dataDeNascimento, aux2->dataDeNascimento);
+
+                strcpy(aux2->nome, atual->nome);
+                strcpy(aux2->telefone, atual->telefone);
+                strcpy(aux2->endereco, atual->endereco);
+                aux2->cep = atual->cep;
+                strcpy(aux2->dataDeNascimento, atual->dataDeNascimento);
+            }
+        } else {
+            for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant) {
+                strcpy(aux2->prox->nome, aux2->nome);
+                strcpy(aux2->prox->telefone, aux2->telefone);
+                strcpy(aux2->prox->endereco, aux2->endereco);
+                aux2->prox->cep = aux2->cep;
+                strcpy(aux2->prox->dataDeNascimento, aux2->dataDeNascimento);
+            }
+            strcpy(aux2->prox->nome, atual->nome);
+            strcpy(aux2->prox->telefone, atual->telefone);
+            strcpy(aux2->prox->endereco, atual->endereco);
+            aux2->prox->cep = atual->cep;
+            strcpy(aux2->prox->dataDeNascimento, atual->dataDeNascimento);
         }
-        strcpy(aux2->prox->nome, atual->nome);
-        strcpy(aux2->prox->telefone, atual->telefone);
-        strcpy(aux2->prox->endereco, atual->endereco);
-        aux2->prox->cep = atual->cep;
-        strcpy(aux2->prox->dataDeNascimento, atual->dataDeNascimento);
     }
 
     return l;
