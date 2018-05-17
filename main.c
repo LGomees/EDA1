@@ -111,14 +111,12 @@ int main () {
             case 2:
                 printf("Nome: ");
                 scanf("%s", novoNome);
-                puts(novoNome);
                 contatos = removeContato(contatos, novoNome);
                 printf("%s removido com sucesso!\n", novoNome);
                 break;
             case 3:
                 printf("Nome: ");
                 scanf("%s", novoNome);
-                puts(novoNome);
                 visualizaNome(contatos, novoNome);
                 break;
             case 4:
