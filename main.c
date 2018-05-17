@@ -265,13 +265,13 @@ Pessoa *ordenaLista(Pessoa *l) {
     Pessoa *aux;
     Pessoa *aux2;
 
-    for(aux = l->prox; aux != NULL; aux = aux->prox, i++) {
+    for(aux = l->prox; aux != NULL; aux = aux->prox) {
         strcpy(atual->nome, aux->nome);
         strcpy(atual->telefone, aux->telefone);
         strcpy(atual->endereco, aux->endereco);
         atual->cep = aux->cep;
         strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
-        for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant, j--) {
+        for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant) {
             strcpy(aux2->prox->nome, aux2->nome);
             strcpy(aux2->prox->telefone, aux2->telefone);
             strcpy(aux2->prox->endereco, aux2->endereco);
