@@ -282,7 +282,7 @@ Pessoa *ordenaLista(Pessoa *l) {
         aux2->cep = atual->cep;
         strcpy(aux2->dataDeNascimento, atual->dataDeNascimento);
         printf("TESTE\n");
-        aux2 = l;
+        //aux2 = l;
     }
 
     return l;
