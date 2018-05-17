@@ -134,7 +134,6 @@ int main () {
 
     } while(status != 5);
 
-    //imprime(contatos);
 
     reescreveArquivo(contatos);
     libera(contatos);
@@ -188,17 +187,14 @@ void libera(Pessoa *l) {
 
 void imprime(Pessoa *l){
     Pessoa *aux;
-    int i = 0;
 
     for(aux = l; aux != NULL; aux = aux->prox) {
         printf("------------------------------\n");
-        printf("Anterior: %p, Atual: %p, Posterior: %p", aux->ant, aux, aux->prox);
-        // printf("Nome: %s\n", aux->nome);
-        // printf("Telefone: %s\n", aux->telefone);
-        // printf("Endereco: %s\n", aux->endereco);
-        // printf("CEP: %d\n", aux->cep);
-        // printf("Data de nascimento: %s\n", aux->dataDeNascimento);
-        // i++;
+        printf("Nome: %s\n", aux->nome);
+        printf("Telefone: %s\n", aux->telefone);
+        printf("Endereco: %s\n", aux->endereco);
+        printf("CEP: %d\n", aux->cep);
+        printf("Data de nascimento: %s\n", aux->dataDeNascimento);
     }
 
 }
@@ -269,34 +265,24 @@ Pessoa *ordenaLista(Pessoa *l) {
     Pessoa *aux;
     Pessoa *aux2;
 
-    imprime(l);
-
     for(aux = l->prox; aux != NULL; aux = aux->prox, i++) {
-        // atual = aux;
         strcpy(atual->nome, aux->nome);
-        puts(atual->nome);
-        puts(aux->ant->nome);
         strcpy(atual->telefone, aux->telefone);
         strcpy(atual->endereco, aux->endereco);
         atual->cep = aux->cep;
         strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
-        printf("Aux: %p, Atual: %p\n", aux, atual);
         for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant, j--) {
             strcpy(aux2->prox->nome, aux2->nome);
             strcpy(aux2->prox->telefone, aux2->telefone);
             strcpy(aux2->prox->endereco, aux2->endereco);
             aux2->prox->cep = aux2->cep;
             strcpy(aux2->prox->dataDeNascimento, aux2->dataDeNascimento);
-            printf("Aux2: %p, Aux2 Prox: %p, Atual: %p\n", aux2, aux2->prox, atual);
         }
-        printf("-----------------------\n");
-        printf("Aux2 Prox: %p, Atual: %p\n", aux2->prox, atual);
         strcpy(aux2->prox->nome, atual->nome);
         strcpy(aux2->prox->telefone, atual->telefone);
         strcpy(aux2->prox->endereco, atual->endereco);
         aux2->prox->cep = atual->cep;
         strcpy(aux2->prox->dataDeNascimento, atual->dataDeNascimento);
-        printf("------------------------\n");
     }
 
     return l;
