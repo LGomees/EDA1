@@ -106,14 +106,14 @@ int main () {
                 novoEndereco, novoCep, novaDataDeNascimento);
                 printf("Preenchido com sucesso\n");
                 printf("\n\n\n\n");
-                //contatos = ordenaLista(contatos);
+                contatos = ordenaLista(contatos);
                 break;
             case 2:
                 printf("Nome: ");
                 scanf("%s", novoNome);
                 contatos = removeContato(contatos, novoNome);
                 printf("%s removido com sucesso!\n", novoNome);
-                //contatos = ordenaLista(contatos);
+                contatos = ordenaLista(contatos);
                 break;
             case 3:
                 printf("Nome: ");
@@ -192,12 +192,13 @@ void imprime(Pessoa *l){
 
     for(aux = l; aux != NULL; aux = aux->prox) {
         printf("------------------------------\n");
-        printf("Nome: %s\n", aux->nome);
-        printf("Telefone: %s\n", aux->telefone);
-        printf("Endereco: %s\n", aux->endereco);
-        printf("CEP: %d\n", aux->cep);
-        printf("Data de nascimento: %s\n", aux->dataDeNascimento);
-        i++;
+        printf("Anterior: %p, Atual: %p, Posterior: %p", aux->ant, aux, aux->prox);
+        // printf("Nome: %s\n", aux->nome);
+        // printf("Telefone: %s\n", aux->telefone);
+        // printf("Endereco: %s\n", aux->endereco);
+        // printf("CEP: %d\n", aux->cep);
+        // printf("Data de nascimento: %s\n", aux->dataDeNascimento);
+        // i++;
     }
 
 }
@@ -254,35 +255,48 @@ void reescreveArquivo(Pessoa *l) {
 Pessoa *ordenaLista(Pessoa *l) {
     int i, j;
     Pessoa *atual;
+    atual = (Pessoa*) malloc(sizeof(Pessoa));
+    if(atual == NULL) {
+        printf("Erro na alocação!\n");
+        exit(-1);
+    }
+
+    atual->nome = (char*) malloc(sizeof(char)*100);
+    atual->telefone = (char*) malloc(sizeof(char)*15);
+    atual->endereco = (char*) malloc(sizeof(char)*100);
+    atual->dataDeNascimento = (char*) malloc(sizeof(char)*15);
 
     Pessoa *aux;
     Pessoa *aux2;
 
-    strcpy(atual->nome, aux->nome);
-    strcpy(atual->telefone, aux->telefone);
-    strcpy(atual->endereco, aux->endereco);
-    atual->cep = aux->cep;
-    strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
+    imprime(l);
 
     for(aux = l->prox; aux != NULL; aux = aux->prox, i++) {
-        atual = aux;
-        
-        for (aux2 = aux->ant; aux2 != NULL && strcmp(atual->nome, aux2->nome) > 0 ; aux2 = aux2->ant, j--) {
-            strcpy(aux2->nome, aux2->ant->nome);
-            strcpy(aux2->telefone, aux2->ant->telefone);
-            strcpy(aux2->endereco, aux2->ant->endereco);
-            aux2->cep = aux2->ant->cep;
-            strcpy(aux2->dataDeNascimento, aux2->ant->dataDeNascimento);
-            aux2 = aux2->ant;
+        // atual = aux;
+        strcpy(atual->nome, aux->nome);
+        puts(atual->nome);
+        puts(aux->ant->nome);
+        strcpy(atual->telefone, aux->telefone);
+        strcpy(atual->endereco, aux->endereco);
+        atual->cep = aux->cep;
+        strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
+        printf("Aux: %p, Atual: %p\n", aux, atual);
+        for (aux2 = aux->ant; aux2->ant != NULL && strcmp(atual->nome, aux2->nome) < 0; aux2 = aux2->ant, j--) {
+            strcpy(aux2->prox->nome, aux2->nome);
+            strcpy(aux2->prox->telefone, aux2->telefone);
+            strcpy(aux2->prox->endereco, aux2->endereco);
+            aux2->prox->cep = aux2->cep;
+            strcpy(aux2->prox->dataDeNascimento, aux2->dataDeNascimento);
+            printf("Aux2: %p, Aux2 Prox: %p, Atual: %p\n", aux2, aux2->prox, atual);
         }
-        printf("Teste\n");
-        strcpy(aux2->nome, atual->nome);
-        strcpy(aux2->telefone, atual->telefone);
-        strcpy(aux2->endereco, atual->endereco);
-        aux2->cep = atual->cep;
-        strcpy(aux2->dataDeNascimento, atual->dataDeNascimento);
-        printf("TESTE\n");
-        //aux2 = l;
+        printf("-----------------------\n");
+        printf("Aux2 Prox: %p, Atual: %p\n", aux2->prox, atual);
+        strcpy(aux2->prox->nome, atual->nome);
+        strcpy(aux2->prox->telefone, atual->telefone);
+        strcpy(aux2->prox->endereco, atual->endereco);
+        aux2->prox->cep = atual->cep;
+        strcpy(aux2->prox->dataDeNascimento, atual->dataDeNascimento);
+        printf("------------------------\n");
     }
 
     return l;
