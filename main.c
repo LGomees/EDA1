@@ -203,10 +203,7 @@ Pessoa *removeContato(Pessoa *l, char* nome) {
     Pessoa *posterior;
 
     for(atual = l; atual != NULL; atual = atual->prox) {
-        puts(nome);
-        puts(atual->nome);
         if (strncmp(atual->nome, nome, strlen(atual->nome)-2) == 0) {
-            printf("Passou!\n");
             anterior = atual->ant;
             posterior = atual->prox;
             anterior->prox = atual->prox;
@@ -214,6 +211,7 @@ Pessoa *removeContato(Pessoa *l, char* nome) {
             free(atual);
         }
     }
+    return l;
 }
 
 void visualizaNome(Pessoa *l, char* nome) {
