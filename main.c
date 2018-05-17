@@ -19,6 +19,7 @@ void imprime(Pessoa *l);
 Pessoa *removeContato(Pessoa *l, char*);
 void visualizaNome(Pessoa *l, char*);
 void reescreveArquivo(Pessoa *l);
+Pessoa *ordenaLista(Pessoa *l);
 
 int main () {
     Pessoa *contatos;
@@ -62,6 +63,8 @@ int main () {
         }
     } while(!feof(contatosFile));
 
+    contatos = ordenaLista(contatos);
+
     do {
         printf("Escolha uma das opcoes seguintes:\n");
         printf("1 - Inserir novo registro\n");
@@ -73,11 +76,15 @@ int main () {
         scanf("%d", &status);
         printf("\n");
 
-        char novoNome[100] = "";
+        char novoNome[100];
         char novoTelefone[15] = "";
         char novoEndereco[100] = "";
         unsigned int novoCep;
         char novaDataDeNascimento[15] = "";
+        int i = 0;
+
+        int j, atual;
+        char original[5] = "SDAGS";
 
         switch(status) {
             case 1:
@@ -99,16 +106,23 @@ int main () {
                 novoEndereco, novoCep, novaDataDeNascimento);
                 printf("Preenchido com sucesso\n");
                 printf("\n\n\n\n");
+                //contatos = ordenaLista(contatos);
                 break;
             case 2:
                 printf("Nome: ");
                 scanf("%s", novoNome);
                 contatos = removeContato(contatos, novoNome);
                 printf("%s removido com sucesso!\n", novoNome);
+                //contatos = ordenaLista(contatos);
                 break;
             case 3:
+                printf("Nome: ");
+                scanf("%s", novoNome);
+                visualizaNome(contatos, novoNome);
+                printf("%s removido com sucesso!\n", novoNome);
                 break;
             case 4:
+                imprime(contatos);
                 break;
             case 5:
                 printf("Programa encerrado!\n");
@@ -154,10 +168,11 @@ Pessoa *insereInicio(Pessoa *l, char *nome, char *telefone, char *endereco, unsi
 
     if(l == NULL) {
         novo->prox = NULL;
-        //novo->ant = NULL;
+        novo->ant = NULL;
         return novo;
     } else {
         novo->prox = l;
+        l->ant = novo;
         return novo;
     }
 }
@@ -234,4 +249,41 @@ void reescreveArquivo(Pessoa *l) {
         fputs("$\n", contatosFile);
     }
     fclose(contatosFile);
+}
+
+Pessoa *ordenaLista(Pessoa *l) {
+    int i, j;
+    Pessoa *atual;
+
+    Pessoa *aux;
+    Pessoa *aux2;
+
+    strcpy(atual->nome, aux->nome);
+    strcpy(atual->telefone, aux->telefone);
+    strcpy(atual->endereco, aux->endereco);
+    atual->cep = aux->cep;
+    strcpy(atual->dataDeNascimento, aux->dataDeNascimento);
+
+    for(aux = l->prox; aux != NULL; aux = aux->prox, i++) {
+        atual = aux;
+        
+        for (aux2 = aux->ant; aux2 != NULL && strcmp(atual->nome, aux2->nome) > 0 ; aux2 = aux2->ant, j--) {
+            strcpy(aux2->nome, aux2->ant->nome);
+            strcpy(aux2->telefone, aux2->ant->telefone);
+            strcpy(aux2->endereco, aux2->ant->endereco);
+            aux2->cep = aux2->ant->cep;
+            strcpy(aux2->dataDeNascimento, aux2->ant->dataDeNascimento);
+            aux2 = aux2->ant;
+        }
+        printf("Teste\n");
+        strcpy(aux2->nome, atual->nome);
+        strcpy(aux2->telefone, atual->telefone);
+        strcpy(aux2->endereco, atual->endereco);
+        aux2->cep = atual->cep;
+        strcpy(aux2->dataDeNascimento, atual->dataDeNascimento);
+        printf("TESTE\n");
+        aux2 = l;
+    }
+
+    return l;
 }
