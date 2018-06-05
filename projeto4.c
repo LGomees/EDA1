@@ -96,14 +96,14 @@ int main() {
     fila = adicionaFila(vooInicial, voos);
     
     // Pista 2
-    finalAdicionaVoo(&nVoos, voos->status, tempo, 1, voos->codigo);
+    finalAdicionaVoo(&nVoos, voos->status, tempo, 2, voos->codigo);
     voos = voos->proximo;
     fila = adicionaFila(vooInicial, voos);
 
     // Pista 3
+    finalAdicionaVoo(&nVoos, voos->status, tempo, 3, voos->codigo);
     voos = voos->proximo;
     fila = adicionaFila(vooInicial, voos);
-    nDecolagens -= 1;
 
     cont++;
   } while(nVoos == 0);
