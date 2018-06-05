@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <string.h>
 #define NUM_MAX_VOOS 64
 #define TAMANHO_CODIGO 7
 
 typedef struct voo {
   char *codigo;
-  char *status;
+  char status;
   int combustivel;
-  struct Voo *proximo;
+  struct voo *proximo;
 } Voo;
 
 typedef struct fila {
@@ -19,12 +21,20 @@ Fila *criaFilaVazia();
 Fila *adicionaFila(Voo*, Voo*);
 void liberaFila(Fila*);
 Voo *criaVooVazio();
-Voo *adicionaVoo(char*, char*, int, Voo*);
+Voo *adicionaVoo(char*, char, int, Voo*);
 void liberaVoo(Voo*);
+void finalAdicionaVoo(int*, char, int, int, char*);
+void imprimeVoos(Voo*);
+
+// Aproximação 1*UnTempo     Pouso 3*UnTempo     Decolagem 2*UnTempo
 
 int main() {
   int nVoos, nAproximacao, nDecolagens, combA;
-  char **codigos;
+  int UnTempo = 50;
+  char pistas[3];
+  char *codigos;
+  Voo *voos = criaVooVazio();
+  Fila *fila = criaFilaVazia();
 
   FILE *codigosFile = fopen("./codigo_voos.txt", "r+");
   if(codigosFile == NULL) {
@@ -32,39 +42,101 @@ int main() {
     exit(1);
   }
 
-  srand(TIME(NULL)); 
+  srand(time(NULL)); 
   nAproximacao = rand() % 22 + 10;
   nDecolagens = rand() % 22 + 10;
   nVoos = nAproximacao + nDecolagens;
-  combA = rand() % 12;
 
   int cont = 0;
-  // Aloca matriz de códigos de voo
-  codigos = (char**) malloc(NUM_MAX_VOOS*sizeof(char*));
-  for(int i = 0, i<NUM_MAX_VOOS; i++) {
-    *(codigos+i) = (char*) malloc (TAMANHO_CODIGO*sizeof(char));
+  codigos = (char*) malloc(TAMANHO_CODIGO*sizeof(char));
+
+  // do while com todos os eventos
+  // pista 3: Decolagens, pista 1,2 tanto para pouso quanto para decolagem
+  int tempo = 0;
+  cont = 0;
+  Voo *vooInicial;
+
+  // Cria voos de aproximação
+  for(int i=0; i<nAproximacao; i++) {
+    combA = rand() % 12;
+    fgets(codigos, 7, codigosFile);
+    voos = adicionaVoo(codigos, 'A', combA, voos);
   }
-  // Armazena códigos de voo do arquivo na matriz
-  do {
-    fgets(*(*(codigos)+cont));
-    cont++;
-  } while(!feof(codigosFile));
+
+  // Cria voos de decolagem
+  for(int i=0; i<nDecolagens; i++) {
+    combA = rand() % 12;
+    fgets(codigos, 7, codigosFile);
+    voos = adicionaVoo(codigos, 'D', combA, voos);
+
+    if (i == 0) {
+      vooInicial = voos;
+    }
+  }
+
+  fila = adicionaFila(vooInicial, voos);
 
   printf("---------------------------------------------------------------\n");
-  printf('"Aeroporto Internacional de Brasília"\n');
-  printf("Hora Inicial: \n");
-  printf("Fila de Pedidos: \n"); // [Código de voo - P/D - Prioridade]
+  printf("Aeroporto Internacional de Brasília\n");
+  printf("Hora Inicial: %d minutos\n", tempo);
+  printf("Fila de Pedidos: \n");
+  imprimeVoos(voos);
   printf("NVoos: %d\n", nVoos);
   printf("NAproximacoes: %d\n", nAproximacao);
   printf("NDecolagens: %d\n", nDecolagens);
   printf("---------------------------------------------------------------\n");
   printf("Listagem de eventos:\n");
 
-  // do while com todos os eventos
+  do {
+    tempo = cont*UnTempo;
+
+    // Pista 1
+    finalAdicionaVoo(&nVoos, voos->status, tempo, 1, voos->codigo);
+    voos = voos->proximo;
+    fila = adicionaFila(vooInicial, voos);
+    
+    // Pista 2
+    finalAdicionaVoo(&nVoos, voos->status, tempo, 1, voos->codigo);
+    voos = voos->proximo;
+    fila = adicionaFila(vooInicial, voos);
+
+    // Pista 3
+    voos = voos->proximo;
+    fila = adicionaFila(vooInicial, voos);
+    nDecolagens -= 1;
+
+    cont++;
+  } while(nVoos == 0);
 
 
 
   return 0;
+}
+
+void imprimeVoos(Voo *voo) {
+  Voo *aux;
+
+  for(aux = voo; aux != NULL; aux = aux->proximo) {
+    printf("%s", aux->codigo);
+  }
+  printf("\n\n");
+}
+
+void finalAdicionaVoo(int* nVoos, char status, int tempo, int nPista, char *codigo) {
+  if(status == 'P') {
+    (*nVoos)--;
+    printf("\n");
+    printf("Codigo do voo: %s", codigo);
+    printf("Status: Aeronave pousou\n");
+    printf("Horario do inicio do procedimento: %d minutos\n", tempo);
+    printf("Numero da pista: %d\n", nPista);
+  } else if(status == 'D') {
+    printf("\n");
+    printf("Codigo do voo: %s\n", codigo);
+    printf("Status: Aeronave decolou\n");
+    printf("Horario do inicio do procedimento: %d minutos\n", tempo);
+    printf("Numero da pista: %d\n", nPista);
+  }
 }
 
 Fila *criaFilaVazia() {
@@ -97,19 +169,17 @@ Voo *criaVooVazio() {
   return NULL;
 }
 
-Voo *adicionaVoo(char *codigo, char *status, int combustivel, Voo *atual) {
+Voo *adicionaVoo(char *codigo, char status, int combustivel, Voo *atual) {
   Voo *novoVoo = (Voo *) malloc(sizeof(Voo));
   if(novoVoo == NULL) {
     printf("Falha na alocacao do Voo\n");
     exit(1);
   }
-  return novoVoo;
 
   novoVoo->codigo = (char*) malloc(sizeof(char)*7);
-  novoVoo->status = (char*) malloc(sizeof(char)*40);
   
   strcpy(novoVoo->codigo, codigo);
-  strcpy(novoVoo->status, status);
+  novoVoo->status = status;
   novoVoo->combustivel = combustivel;
 
   if(atual == NULL) {
@@ -126,6 +196,6 @@ void liberaVoo(Voo *voo) {
 
   for(aux = voo; aux != NULL; voo = aux) {
     aux = aux->proximo;
-    free(l);
+    free(voo);
   }
 }
