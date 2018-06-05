@@ -6,7 +6,7 @@
 #define TAMANHO_CODIGO 7
 
 typedef struct voo {
-  char *codigo;
+  char codigo[7];
   char status;
   int combustivel;
   struct voo *proximo;
@@ -86,27 +86,27 @@ int main() {
   printf("NDecolagens: %d\n", nDecolagens);
   printf("---------------------------------------------------------------\n");
   printf("Listagem de eventos:\n");
-
+  
   do {
     tempo = cont*UnTempo;
 
     // Pista 1
     finalAdicionaVoo(&nVoos, voos->status, tempo, 1, voos->codigo);
-    voos = voos->proximo;
-    fila = adicionaFila(vooInicial, voos);
+    voos = voos->proximo->proximo;
+    fila = adicionaFila(voos, vooInicial);
     
     // Pista 2
     finalAdicionaVoo(&nVoos, voos->status, tempo, 2, voos->codigo);
-    voos = voos->proximo;
-    fila = adicionaFila(vooInicial, voos);
+    voos = voos->proximo->proximo;
+    fila = adicionaFila(voos, vooInicial);
 
     // Pista 3
     finalAdicionaVoo(&nVoos, voos->status, tempo, 3, voos->codigo);
-    voos = voos->proximo;
-    fila = adicionaFila(vooInicial, voos);
+    voos = voos->proximo->proximo;
+    fila = adicionaFila(voos, vooInicial);
 
     cont++;
-  } while(nVoos == 0);
+  } while(cont != nVoos);
 
 
 
@@ -176,7 +176,7 @@ Voo *adicionaVoo(char *codigo, char status, int combustivel, Voo *atual) {
     exit(1);
   }
 
-  novoVoo->codigo = (char*) malloc(sizeof(char)*7);
+  //novoVoo->codigo = (char*) malloc(sizeof(char)*7);
   
   strcpy(novoVoo->codigo, codigo);
   novoVoo->status = status;
