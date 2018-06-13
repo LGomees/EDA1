@@ -14,9 +14,9 @@ void isFull(No** tree); // Show if tree is full or not
 void searchValue(No** tree, int term); // Show nv No, value of father and value of brother(if exist)
 void getHeight(No** tree); // Show the height of the tree
 void removeValue(No** tree, int term); // Remove value of the tree, if don't exist, warn the user
-void printInOrder(No** tree); // Show tree in order
-void printPreOrder(No** tree); // Show tree pre order
-void printPostOrder(No** tree); // Show tree post order
+void printInOrder(No* tree); // Show tree in order
+void printPreOrder(No* tree); // Show tree pre order
+void printPostOrder(No* tree); // Show tree post order
 void balanceTree(No** tree); // Check if the tree is balanced, if it's not, balance using rotation method
 // Other functions
 void addValue(No** tree, int value);
@@ -67,6 +67,30 @@ void removeValue(No** tree, int term) {
                 }
             }
         }
+    }
+}
+
+void printInOrder(No *no) {
+    if(no != NULL) {
+        printInOrder(no->left);
+        printf("\n%d", no->value);
+        printInOrder(no->right);
+    }
+}
+
+void printPreOrder(No *no) {
+    if(no != NULL) {
+        printf("\n%d", no->value);
+        printPreOrder(no->left);
+        printPreOrder(no->right);
+    }
+}
+
+void printPostOrder(No *no) {
+    if(no != NULL) {
+        printPostOrder(no->left);
+        printPostOrder(no->right);
+        printf("\n%d", no->value);
     }
 }
 
