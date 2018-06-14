@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct no {
     int value;
@@ -12,7 +13,7 @@ No **loadTreeFromFile(char* name_file); // Read file, create a tree, return the 
 void showTree(No** tree); // Show the tree
 void isFull(No** tree); // Show if tree is full or not
 void searchValue(No** tree, int term); // Show nv No, value of father and value of brother(if exist)
-void getHeight(No** tree); // Show the height of the tree
+void getHeight(No* tree); // Show the height of the tree
 void removeValue(No** tree, int term); // Remove value of the tree, if don't exist, warn the user
 void printInOrder(No* tree); // Show tree in order
 void printPreOrder(No* tree); // Show tree pre order
@@ -22,14 +23,53 @@ void balanceTree(No** tree); // Check if the tree is balanced, if it's not, bala
 void addValue(No** tree, int value);
 No *higherRight(No** no);
 No *higherLeft(No** no);
+int higher(int a, int b);
 
 int main() {
+    No **tree = NULL;
+    char name_file[4];
+    printf("Digite o nome do arquivo a ser aberto: ");
+    scanf("%s", name_file);
+    tree = loadTreeFromFile(name_file);
 
     return  0;
 }
 
 No **loadTreeFromFile(char* name_file) {
+    char *full_file_name = (char*) malloc(15*sizeof(char));
+    sprintf(full_file_name, "./BSTs/%s.txt", name_file);
+    FILE *file = fopen(full_file_name, "r+");
+    if(file == NULL) {
+        printf("Arquivo nao encontrado!!\n");
+        exit(1);
+    }
 
+    char x;
+    int *vetTree = (int*) malloc(10*sizeof(int));
+    int y = 0, count = 0;
+    char *aux = (char*) malloc(3*sizeof(char));
+
+    do {
+        fscanf(file, "%c", &x);
+        if(x == ' ' || x == '\0') {
+            y = 0;
+            vetTree[count] = atoi(aux);
+            memset(aux, ' ', 3);
+            count++;
+        } else {
+            aux[y] = x;
+            y++;
+        }
+    } while(count != 10);
+}
+
+void getHeight(No* tree) {
+    int height;
+    if((tree == NULL) || (tree->left == NULL && tree->right == NULL)) {
+        
+    } else {
+
+    }
 }
 
 void removeValue(No** tree, int term) {
@@ -134,5 +174,13 @@ No *higherLeft(No** no) {
             *no = NULL;
         }
         return aux;
+    }
+}
+
+int higher(int a, int b) {
+    if(a > b) {
+        return a;
+    } else {
+        return b;
     }
 }
