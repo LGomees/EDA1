@@ -25,6 +25,7 @@ No *newNo(int term);
 No *higherRight(No** no);
 No *higherLeft(No** no);
 int higher(int a, int b);
+int getLevelUtil(No *tree, int term, int level);
 
 
 int main() {
@@ -135,17 +136,11 @@ No *loadTreeFromFile(char* name_file) {
 }
 
 void searchValue(No* tree, int term) {
-    if(tree == NULL) {
-        printf("Numero nao encontrado\n");
-        return; 
-    } else if (tree->value == term) {
-        printf("Achou!!\n");
-        return;
-    }
-    if(tree->value < term) {
-        searchValue(tree->right, term);
+    int level = getLevelUtil(tree, term, 1);
+    if(level == 0) {
+        printf("\nNumero nao encontrado!\n\n\n");
     } else {
-        searchValue(tree->left, term);
+        printf("\nO nivel do valor %d e %d\n\n\n", term, level);
     }
 }
 
@@ -273,4 +268,20 @@ int higher(int a, int b) {
     } else {
         return b;
     }
+}
+
+int getLevelUtil(No *tree, int term, int level) {
+    if (tree == NULL) {
+        return 0;
+    }
+    if (tree->value == term) {
+        return level;
+    }
+
+    int downlevel = getLevelUtil(tree->left, term, level+1);
+    if (downlevel != 0) {
+        return downlevel;
+    }
+    downlevel = getLevelUtil(tree->right, term, level+1);
+    return downlevel;
 }
