@@ -13,7 +13,7 @@ No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the t
 void showTree(No** tree); // Show the tree
 void isFull(No** tree); // Show if tree is full or not
 void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist)
-void getHeight(No* tree); // Show the height of the tree
+void getHeight(No *tree); // Show the height of the tree
 void removeValue(No** tree, int term); // Remove value of the tree, if don't exist, warn the user
 void printInOrder(No* tree); // Show tree in order
 void printPreOrder(No* tree); // Show tree pre order
@@ -22,10 +22,8 @@ void balanceTree(No** tree); // Check if the tree is balanced, if it's not, bala
 // Other functions
 No *insert(No* tree, int value);
 No *newNo(int term);
-No *higherRight(No** no);
-No *higherLeft(No** no);
-int higher(int a, int b);
 int getLevelUtil(No *tree, int term, int level);
+int height(No *tree);
 
 
 int main() {
@@ -66,7 +64,7 @@ int main() {
                 searchValue(tree, valueSearch);
                 break;
             case 4:
-                printf("Case 4\n");
+                getHeight(tree);
                 break;
             case 5:
                 printf("Case 5\n");
@@ -144,16 +142,18 @@ void searchValue(No* tree, int term) {
     }
 }
 
-void getHeight(No* tree) {
-    int height;
-    if((tree == NULL) || (tree->left == NULL && tree->right == NULL)) {
-        
-    } else {
+void getHeight(No *tree) {
+    int n_height = height(tree);
 
+    if(n_height == 0) {
+        printf("Arvore vazia!\n");
+    } else {
+        printf("A arvore tem tamanho %d\n\n\n", n_height);
     }
+
 }
 
-void removeValue(No** tree, int term) {
+/*void removeValue(No** tree, int term) {
     if(*tree == NULL) {
         printf("Este numero nao esta presente na arvore!\n");
         return;
@@ -189,7 +189,7 @@ void removeValue(No** tree, int term) {
             }
         }
     }
-}
+} */
 
 void printInOrder(No *no) {
     if(no != NULL) {
@@ -234,42 +234,6 @@ No *insert(No* tree, int value) {
     return tree;
 }
 
-No *higherRight(No** no) {
-    if((*no)->right != NULL) {
-        return higherRight(&(*no)->right);
-    } else {
-        No *aux = *no;
-        if((*no)->left != NULL) {
-            *no = (*no)->left;
-        } else {
-            *no = NULL;
-        }
-        return aux;
-    }
-}
-
-No *higherLeft(No** no) {
-    if((*no)->left != NULL) {
-        return higherLeft(&(*no)->left);
-    } else {
-        No *aux = *no;
-        if((*no)->right != NULL) {
-            *no = (*no)->right;
-        } else {
-            *no = NULL;
-        }
-        return aux;
-    }
-}
-
-int higher(int a, int b) {
-    if(a > b) {
-        return a;
-    } else {
-        return b;
-    }
-}
-
 int getLevelUtil(No *tree, int term, int level) {
     if (tree == NULL) {
         return 0;
@@ -284,4 +248,19 @@ int getLevelUtil(No *tree, int term, int level) {
     }
     downlevel = getLevelUtil(tree->right, term, level+1);
     return downlevel;
+}
+
+int height(No *tree) {
+    if (tree == NULL) {
+        return 0;
+    } else {
+        int lH = height(tree->left);
+        int rH = height(tree->right);
+
+        if (lH > rH) {
+            return (lH + 1);
+        } else {
+            return (rH + 1);
+        }
+    }
 }
