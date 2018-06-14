@@ -9,7 +9,7 @@ typedef struct no {
 } No;
 
 // Main functions
-No **loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree
+No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree
 void showTree(No** tree); // Show the tree
 void isFull(No** tree); // Show if tree is full or not
 void searchValue(No** tree, int term); // Show nv No, value of father and value of brother(if exist)
@@ -20,22 +20,27 @@ void printPreOrder(No* tree); // Show tree pre order
 void printPostOrder(No* tree); // Show tree post order
 void balanceTree(No** tree); // Check if the tree is balanced, if it's not, balance using rotation method
 // Other functions
-void addValue(No** tree, int value);
+No *insert(No* tree, int value);
+No *newNo(int term);
 No *higherRight(No** no);
 No *higherLeft(No** no);
 int higher(int a, int b);
 
+
 int main() {
-    No **tree = NULL;
+    No *tree;
     char name_file[4];
     printf("Digite o nome do arquivo a ser aberto: ");
     scanf("%s", name_file);
     tree = loadTreeFromFile(name_file);
+    printInOrder(tree);
 
     return  0;
 }
 
-No **loadTreeFromFile(char* name_file) {
+No *loadTreeFromFile(char* name_file) {
+    No *tree = NULL;
+    // createTree(tree);
     char *full_file_name = (char*) malloc(15*sizeof(char));
     sprintf(full_file_name, "./BSTs/%s.txt", name_file);
     FILE *file = fopen(full_file_name, "r+");
@@ -61,6 +66,12 @@ No **loadTreeFromFile(char* name_file) {
             y++;
         }
     } while(count != 10);
+
+    for(int i = 0; i<10; i++) {
+        tree = insert(tree, vetTree[i]);
+    }
+
+    return tree;
 }
 
 void getHeight(No* tree) {
@@ -134,19 +145,23 @@ void printPostOrder(No *no) {
     }
 }
 
-void addValue(No** tree, int value) {
-    if(*tree == NULL) {
-        *tree = (No*) malloc(sizeof(No));
-        (*tree)->right = NULL;
-        (*tree)->left = NULL;
-        (*tree)->value = value;
-    } else {
-        if(value > ((*tree)->value)) {
-            addValue(&((*tree)->right), value);
-        } else {
-            addValue(&((*tree)->left), value);
-        }
+
+No *newNo(int term) {
+    No *temp = (No*) malloc(sizeof(No));
+    temp->value = term;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+No *insert(No* tree, int value) {
+    if (tree == NULL) return newNo(value);
+
+    if (value < tree->value) {
+        tree->left = insert(tree->left, value);
+    } else if (value > tree->value) {
+        tree->right = insert(tree->right, value);
     }
+    return tree;
 }
 
 No *higherRight(No** no) {
