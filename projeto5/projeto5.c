@@ -12,7 +12,7 @@ typedef struct no {
 No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree
 void showTree(No** tree); // Show the tree
 void isFull(No** tree); // Show if tree is full or not
-void searchValue(No** tree, int term); // Show nv No, value of father and value of brother(if exist)
+void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist)
 void getHeight(No* tree); // Show the height of the tree
 void removeValue(No** tree, int term); // Remove value of the tree, if don't exist, warn the user
 void printInOrder(No* tree); // Show tree in order
@@ -34,6 +34,8 @@ int main() {
     scanf("%s", name_file);
     tree = loadTreeFromFile(name_file);
     printInOrder(tree);
+    printf("\n");
+    searchValue(tree, 50);
 
     return  0;
 }
@@ -72,6 +74,21 @@ No *loadTreeFromFile(char* name_file) {
     }
 
     return tree;
+}
+
+void searchValue(No* tree, int term) {
+    if(tree == NULL) {
+        printf("Numero nao encontrado\n");
+        return;
+    } else if (tree->value == term) {
+        printf("Achou!!\n");
+        return;
+    }
+    if(tree->value < term) {
+        searchValue(tree->right, term);
+    } else {
+        searchValue(tree->left, term);
+    }
 }
 
 void getHeight(No* tree) {
