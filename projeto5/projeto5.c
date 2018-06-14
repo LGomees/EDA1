@@ -30,12 +30,70 @@ int higher(int a, int b);
 int main() {
     No *tree;
     char name_file[4];
+    int status;
+    int valueSearch;
     printf("Digite o nome do arquivo a ser aberto: ");
     scanf("%s", name_file);
     tree = loadTreeFromFile(name_file);
-    printInOrder(tree);
-    printf("\n");
-    searchValue(tree, 50);
+
+    do {
+        printf("Escolha uma das opcoes seguintes:\n");
+        printf("1 - Mostrar arvore\n");
+        printf("2 - Mostrar se a arvore e cheia ou nao\n");
+        printf("3 - Procurar um valor dentro da arvore\n");
+        printf("4 - Mostrar a altura da arvore\n");
+        printf("5 - Remover valor da arvore\n");
+        printf("6 - Imprimir com o algoritmo In Order\n");
+        printf("7 - Imprimir com o algoritmo Pre Order\n");
+        printf("8 - Imprimir com o algoritmo Post Order\n");
+        printf("9 - Balancear arvore\n");
+        printf("10 - Sair\n");
+        printf("Sua escolha: ");
+        scanf("%d", &status);
+        printf("\n");
+
+        switch(status) {
+            case 1:
+                printf("Case 1\n");
+                break;
+            case 2:
+                printf("Case 2\n");
+                break;
+            case 3:
+                printf("Digite o numero a ser procurado: ");
+                scanf("%d", &valueSearch);
+                searchValue(tree, valueSearch);
+                break;
+            case 4:
+                printf("Case 4\n");
+                break;
+            case 5:
+                printf("Case 5\n");
+                break;
+            case 6:
+                printInOrder(tree);
+                printf("\n");
+                break;
+            case 7:
+                printPreOrder(tree);
+                printf("\n");
+                break;
+            case 8:
+                printPostOrder(tree);
+                printf("\n");
+                break;
+            case 9:
+                printf("Case 9\n");
+                break;
+            case 10:
+                printf("Saindo...\n");
+                break;
+            default:
+            printf("Opcao invalida, escolha uma opcao entre 1 e 10!\n");
+                break;
+
+        }
+    } while(status != 10);
 
     return  0;
 }
@@ -79,7 +137,7 @@ No *loadTreeFromFile(char* name_file) {
 void searchValue(No* tree, int term) {
     if(tree == NULL) {
         printf("Numero nao encontrado\n");
-        return;
+        return; 
     } else if (tree->value == term) {
         printf("Achou!!\n");
         return;
