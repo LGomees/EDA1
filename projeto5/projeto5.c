@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct no {
     int value;
@@ -10,20 +11,21 @@ typedef struct no {
 
 // Main functions
 No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree
-void showTree(No** tree); // Show the tree
-void isFull(No** tree); // Show if tree is full or not
+void showTree(No* tree); // Show the tree
+void isFull(No* tree); // Show if tree is full or not
 void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist)
-void getHeight(No *tree); // Show the height of the tree
-void removeValue(No** tree, int term); // Remove value of the tree, if don't exist, warn the user
+void getHeight(No* tree); // Show the height of the tree
+void removeValue(No* tree, int term); // Remove value of the tree, if don't exist, warn the user
 void printInOrder(No* tree); // Show tree in order
 void printPreOrder(No* tree); // Show tree pre order
 void printPostOrder(No* tree); // Show tree post order
-void balanceTree(No** tree); // Check if the tree is balanced, if it's not, balance using rotation method
+void balanceTree(No* tree); // Check if the tree is balanced, if it's not, balance using rotation method
 // Other functions
 No *insert(No* tree, int value);
 No *newNo(int term);
 int getLevelUtil(No *tree, int term, int level);
 int height(No *tree);
+bool isFullTree(No* tree);
 
 
 int main() {
@@ -56,7 +58,7 @@ int main() {
                 printf("Case 1\n");
                 break;
             case 2:
-                printf("Case 2\n");
+                isFull(tree);
                 break;
             case 3:
                 printf("Digite o numero a ser procurado: ");
@@ -131,6 +133,15 @@ No *loadTreeFromFile(char* name_file) {
     }
 
     return tree;
+}
+
+void isFull(No* tree) {
+    bool full = isFullTree(tree);
+    if (full) {
+        printf("A arvore e cheia\n\n\n");
+    } else {
+        printf("A arvore nao e cheia\n\n\n");
+    }
 }
 
 void searchValue(No* tree, int term) {
@@ -263,4 +274,17 @@ int height(No *tree) {
             return (rH + 1);
         }
     }
+}
+
+bool isFullTree(No* tree) {
+    if (tree == NULL) {
+        return true;
+    }
+    if (tree->left == NULL && tree->right == NULL) {
+        return true;
+    }
+    if ((tree->left) && (tree->right)) {
+        return (isFullTree(tree->left) && isFullTree(tree->right));
+    }
+    return false;
 }
