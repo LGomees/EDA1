@@ -75,7 +75,9 @@ int main() {
                 getHeight(tree);
                 break;
             case 5:
-                printf("Case 5\n");
+                printf("Digite o numero a ser deletado: ");
+                scanf("%d", &valueSearch);
+                removeValue(tree, valueSearch);
                 break;
             case 6:
                 printInOrder(tree);
@@ -154,10 +156,10 @@ void showTree(No* tree) {
     int columns = pow(2, max_height);
     for(int i=0; i<rows; i++) {
         *(m_tree+i) = (char*) malloc(columns*sizeof(char));
-        memset(*(m_tree+i), '-', columns);
+        memset(*(m_tree+i), ' ', columns);
     }
 
-    if(max_height < 10) {
+    if(max_height < 8) {
         printTreeRight(tree, max_height, 1, m_tree, 0);
 
         for(int i =0; i<rows; i++) {
@@ -197,43 +199,15 @@ void getHeight(No *tree) {
 
 }
 
-/*void removeValue(No** tree, int term) {
-    if(*tree == NULL) {
-        printf("Este numero nao esta presente na arvore!\n");
-        return;
-    }
-    if(term < (*tree)->value) {
-        removeValue(&((*tree)->right), term);
+void removeValue(No* tree, int term) {
+    int level = getLevelUtil(tree, term, 1);
+    if(level == 0) {
+        printf("\nNumero nao encontrado!\n\n\n");
     } else {
-        if(term > (*tree)->value) {
-            removeValue(&((*tree)->right), term);
-        } else {
-            No *aux = *tree;
-            if(((*tree)->left) == NULL && ((*tree)->right == NULL)) {
-                free(aux);
-                (*tree) = NULL;
-            } else {
-                if((*tree)->left == NULL) {
-                    (*tree) =(*tree)->right;
-                    aux->right = NULL;
-                    free(aux); aux = NULL;
-                } else {
-                    if((*tree)->right == NULL) {
-                        (*tree) = (*tree)->left;
-                        aux->left = NULL;
-                        free(aux); aux = NULL;
-                    } else {
-                        aux = higherRight(&(*tree)->left);
-                        aux->left = (*tree)->left;
-                        aux->right = (*tree)->right;
-                        (*tree)->left = (*tree)->right = NULL;
-                        free((*tree)); *tree = aux; aux = NULL;
-                    }
-                }
-            }
-        }
+        tree = delete(tree, term);
+        printf("Numero deletado com sucesso!\n");
     }
-} */
+}
 
 void printInOrder(No *no) {
     if(no != NULL) {
@@ -345,8 +319,17 @@ No *delete(No* tree, int term) {
             No *temp = tree->right;
             free(tree);
             return temp;
+        } else if (tree->right == NULL) {
+            No *temp = tree->left;
+            free(tree);
+            return temp;
         }
+
+        No *temp = minValue(tree->right);
+        tree->value = temp->value;
+        tree->right = delete(tree->right, temp->value);         
     }
+    return tree;
 }
 
 void padding(char ch, int n) {
