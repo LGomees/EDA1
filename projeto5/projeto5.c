@@ -11,12 +11,12 @@ typedef struct no {
 } No;
 
 // Main functions
-No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree
-void showTree(No* tree); // Show the tree
-void isFull(No* tree); // Show if tree is full or not
-void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist)
-void getHeight(No* tree); // Show the height of the tree
-void removeValue(No* tree, int term); // Remove value of the tree, if don't exist, warn the user
+No *loadTreeFromFile(char* name_file); // Read file, create a tree, return the tree - OK
+void showTree(No* tree); // Show the tree - OK
+void isFull(No* tree); // Show if tree is full or not - OK
+void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist) - OK
+void getHeight(No* tree); // Show the height of the tree - OK
+void removeValue(No* tree, int term); // Remove value of the tree, if don't exist, warn the user - OK
 void printInOrder(No* tree); // Show tree in order
 void printPreOrder(No* tree); // Show tree pre order
 void printPostOrder(No* tree); // Show tree post order
@@ -25,6 +25,7 @@ void balanceTree(No* tree); // Check if the tree is balanced, if it's not, balan
 No *insert(No* tree, int value);
 No *newNo(int term);
 int getLevelUtil(No *tree, int term, int level);
+bool printFather(No* tree, int term);
 int height(No *tree);
 bool isFullTree(No* tree);
 No *minValue(No* tree);
@@ -168,6 +169,7 @@ void showTree(No* tree) {
     } else {
         structure(tree, 0);
     }
+    printf("\n\n");
 }
 
 void isFull(No* tree) {
@@ -184,7 +186,9 @@ void searchValue(No* tree, int term) {
     if(level == 0) {
         printf("\nNumero nao encontrado!\n\n\n");
     } else {
-        printf("\nO nivel do valor %d e %d\n\n\n", term, level);
+        printf("\nO nivel do valor %d e %d\n", term, level);
+        int father = printFather(tree, term);
+        printf("\n\n");
     }
 }
 
@@ -205,7 +209,7 @@ void removeValue(No* tree, int term) {
         printf("\nNumero nao encontrado!\n\n\n");
     } else {
         tree = delete(tree, term);
-        printf("Numero deletado com sucesso!\n");
+        printf("Numero deletado com sucesso!\n\n\n");
     }
 }
 
@@ -266,6 +270,31 @@ int getLevelUtil(No *tree, int term, int level) {
     }
     downlevel = getLevelUtil(tree->right, term, level+1);
     return downlevel;
+}
+
+bool printFather(No* tree, int term) {
+    if(tree == NULL) {
+        return false;
+    }
+    if(tree->value == term) {
+        return true;
+    }
+    if(printFather(tree->left, term)) {
+        if(tree->right != NULL) {
+            printf("O pai e %d e o irmao e %d", tree->value, tree->right->value);
+        } else {
+            printf("O pai e %d e nao possui irmao", tree->value);
+        }
+        return false;
+    } else if(printFather(tree->right, term)) {
+        if(tree->left != NULL) {
+            printf("O pai e %d e o irmao e %d", tree->value, tree->left->value);
+        } else {
+            printf("O pai e %d e nao possui irmao", tree->value);
+        }
+        return false;
+    }
+    return false;
 }
 
 int height(No *tree) {
