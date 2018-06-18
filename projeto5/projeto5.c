@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 typedef struct no {
     int value;
@@ -26,6 +27,11 @@ No *newNo(int term);
 int getLevelUtil(No *tree, int term, int level);
 int height(No *tree);
 bool isFullTree(No* tree);
+No *minValue(No* tree);
+No *delete(No* tree, int term);
+void padding(char ch, int n);
+void structure(No* tree, int level);
+void printTreeRight(No* tree, int max_height, int level, char **m, int c_place);
 
 
 int main() {
@@ -55,7 +61,7 @@ int main() {
 
         switch(status) {
             case 1:
-                printf("Case 1\n");
+                showTree(tree);
                 break;
             case 2:
                 isFull(tree);
@@ -133,6 +139,33 @@ No *loadTreeFromFile(char* name_file) {
     }
 
     return tree;
+}
+
+void showTree(No* tree) {
+    int max_height = height(tree);
+    int rows_slashs = 0;
+    for(int i=1; i<max_height; i++) {
+        rows_slashs += pow(2, (max_height-i-1));
+    }
+
+    char **m_tree;
+    int rows = max_height + rows_slashs;
+    m_tree = (char**) malloc(rows*sizeof(char*));
+    int columns = pow(2, max_height);
+    for(int i=0; i<rows; i++) {
+        *(m_tree+i) = (char*) malloc(columns*sizeof(char));
+        memset(*(m_tree+i), '-', columns);
+    }
+
+    if(max_height < 10) {
+        printTreeRight(tree, max_height, 1, m_tree, 0);
+
+        for(int i =0; i<rows; i++) {
+            puts(*(m_tree+i));
+        }
+    } else {
+        structure(tree, 0);
+    }
 }
 
 void isFull(No* tree) {
@@ -288,3 +321,130 @@ bool isFullTree(No* tree) {
     }
     return false;
 }
+
+No *minValue(No* tree) {
+    No *aux = tree;
+
+    while (aux->left != NULL) {
+        aux = aux->left;
+    }
+
+    return aux;
+}
+
+No *delete(No* tree, int term) {
+    if (tree == NULL) {
+        return tree;
+    }
+    if (term < tree->value) {
+        tree->left = delete(tree->left, term);
+    } else if (term > tree->value) {
+        tree->right = delete(tree->right, term);
+    } else {
+        if(tree->left == NULL) {
+            No *temp = tree->right;
+            free(tree);
+            return temp;
+        }
+    }
+}
+
+void padding(char ch, int n) {
+    for(int i=0; i<n; i++) {
+        putchar(ch);
+    }
+}
+
+void structure(No* tree, int level) {
+    int i;
+
+    if(tree == NULL) {
+        padding('\t', level);
+        puts("~");
+    } else {
+        structure(tree->right, level + 1);
+        padding('\t', level);
+        printf("%d\n", tree->value);
+        structure(tree->left, level + 1);
+    }
+}
+
+void printTreeRight(No* tree, int max_height, int level, char** m, int c_place) {
+    if(tree != NULL) {
+        int place = 0;
+        int c_slashs = pow(2, max_height-level-1);
+        int depth = 0;
+        for(int i=1; i<level; i++) {
+            depth += pow(2, max_height-i-1);
+        }
+        
+        if(level == 1) {
+            place = pow(2, max_height-level);
+            c_place = place;
+            int c_place_r = c_place, c_place_l = c_place;
+
+            char *num = (char*) malloc(3*sizeof(char));
+            snprintf(num, 3, "%d", tree->value);
+            puts(num);
+            if(strlen(num) == 1) {
+                *(*(m)+place) = num[0];
+            } else if (strlen(num) == 2) {
+                *(*(m)+place) = num[0];
+                *(*(m)+place+1) = num[1];
+            } else {
+                *(*(m)+place-1) = num[0];
+                *(*(m)+place) = num[1];
+                *(*(m)+place+1) = num[2];
+            }
+
+            for(int i=1; i<c_slashs+1; i++) {
+                if(tree->left != NULL) {
+                    *(*(m+depth+level+i-1)+place-i) = '/';
+                    c_place_l--;
+                }
+                if(tree->right != NULL) {
+                    *(*(m+depth+level+i-1)+place+i) = '\\';
+                    c_place_r++;
+                }
+            }
+            
+            printTreeRight(tree->left, max_height, level+1, m, c_place_l);
+            printTreeRight(tree->right, max_height, level+1, m, c_place_r);
+
+        } else {
+            place = c_place;
+            int c_place_r = c_place, c_place_l = c_place;
+
+            char *num = (char*) malloc(3*sizeof(char));
+            snprintf(num, 3, "%d", tree->value);
+            puts(num);
+            if(strlen(num) == 1) {
+                *(*(m+depth+level-1)+place) = num[0];
+            } else if (strlen(num) == 2) {
+                *(*(m+depth+level-1)+place) = num[0];
+                *(*(m+depth+level-1)+place+1) = num[1];
+            } else {
+                *(*(m+depth+level-1)+place-1) = num[0];
+                *(*(m+depth+level-1)+place) = num[1];
+                *(*(m+depth+level-1)+place+1) = num[2];
+            }
+
+            if(level != max_height) {
+                for(int i=1; i<c_slashs+1; i++) {
+                    if(tree->left != NULL) {
+                        *(*(m+depth+level+i-1)+place-i) = '/';
+                        c_place_l--;
+                    }
+                    if(tree->right != NULL) {
+                        *(*(m+depth+level+i-1)+place+i) = '\\';
+                        c_place_r++;
+                    }
+                }
+            }
+
+            printTreeRight(tree->left, max_height, level+1, m, c_place_l);
+            printTreeRight(tree->right, max_height, level+1, m, c_place_r);
+        }
+    }
+}
+
