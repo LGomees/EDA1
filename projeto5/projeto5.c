@@ -17,9 +17,9 @@ void isFull(No* tree); // Show if tree is full or not - OK
 void searchValue(No* tree, int term); // Show nv No, value of father and value of brother(if exist) - OK
 void getHeight(No* tree); // Show the height of the tree - OK
 void removeValue(No* tree, int term); // Remove value of the tree, if don't exist, warn the user - OK
-void printInOrder(No* tree); // Show tree in order
-void printPreOrder(No* tree); // Show tree pre order
-void printPostOrder(No* tree); // Show tree post order
+void printInOrder(No* tree); // Show tree in order - OK
+void printPreOrder(No* tree); // Show tree pre order - OK
+void printPostOrder(No* tree); // Show tree post order - OK
 void balanceTree(No* tree); // Check if the tree is balanced, if it's not, balance using rotation method
 // Other functions
 No *insert(No* tree, int value);
@@ -93,7 +93,7 @@ int main() {
                 printf("\n");
                 break;
             case 9:
-                printf("Case 9\n");
+                printf("Balancear...\n");
                 break;
             case 10:
                 printf("Saindo...\n");
@@ -154,7 +154,7 @@ void showTree(No* tree) {
     char **m_tree;
     int rows = max_height + rows_slashs;
     m_tree = (char**) malloc(rows*sizeof(char*));
-    int columns = pow(2, max_height);
+    int columns = pow(2, max_height) + 1;
     for(int i=0; i<rows; i++) {
         *(m_tree+i) = (char*) malloc(columns*sizeof(char));
         memset(*(m_tree+i), ' ', columns);
@@ -396,8 +396,9 @@ void printTreeRight(No* tree, int max_height, int level, char** m, int c_place) 
             int c_place_r = c_place, c_place_l = c_place;
 
             char *num = (char*) malloc(3*sizeof(char));
+            memset(num, ' ', 3);
             snprintf(num, 3, "%d", tree->value);
-            puts(num);
+
             if(strlen(num) == 1) {
                 *(*(m)+place) = num[0];
             } else if (strlen(num) == 2) {
@@ -429,7 +430,10 @@ void printTreeRight(No* tree, int max_height, int level, char** m, int c_place) 
 
             char *num = (char*) malloc(3*sizeof(char));
             snprintf(num, 3, "%d", tree->value);
-            puts(num);
+
+            if(tree->value == 100) {
+                num = "100";
+            }
             if(strlen(num) == 1) {
                 *(*(m+depth+level-1)+place) = num[0];
             } else if (strlen(num) == 2) {
